@@ -1513,7 +1513,7 @@ void game_configmenu()
 		int sy = 38 + (240 - 38) / 2 - 88;
 
 		for(int i = 0; i <= 21; i++) {
-			char *vr[22] = {
+			static char *vr[22] = {
 				"Resolution:", "",
 				"Bit Depth:", "", "", "",
 				"Start Fullscreen:", "", "",
@@ -1522,7 +1522,7 @@ void game_configmenu()
 				"Music Volume:", "",
 				"Effects Volume:", "", "", "", ""
 			};
-			char *vl[22] = {
+			static char *vl[22] = {
 				"320x240", "640x480",
 				"16", "24", "32", "",
 				"Yes", "No", "",
@@ -1533,23 +1533,18 @@ void game_configmenu()
 				"Exit + Save", "",
 				"Exit"
 			};
-		/*
-			lo = opmusicvol / 255 * 9
-			if(lo < 0) lo = 0
-			if(lo > 9) lo = 9
-			la = lo
-			lb = 9 - lo
+			static char line[24];
 
-			if(i = 15) vl$ = "[" + string$(la,"-") + "X" + string$(lb,"-") + "]"
+			if(i == 15 || i == 17) {
+				int vol = (i == 15 ? opmusicvol : opeffectsvol) * 9 / 255;
+				if(vol < 0) vol = 0;
+				if(vol > 9) vol = 9;
 
-			lo = opeffectsvol / 255 * 9
-			if(lo < 0) lo = 0
-			if(lo > 9) lo = 9
-			la = lo
-			lb = 9 - lo
+				strcpy(line, "[----------]");
+				line[vol+1] = 'X';
+				vl[i] = line;
+			}
 
-			if(i = 17) vl$ = "[" + string$(la,"-") + "X" + string$(lb,"-") + "]"
-*/
 			int cl = 3;
 			if(i == 0 && SCR_WIDTH == 320) cl = 0;
 			if(i == 1 && SCR_WIDTH == 640) cl = 0;
@@ -1630,8 +1625,8 @@ void game_configmenu()
 
 				if(keys[SDLK_ESCAPE]) break;
 				if(cursel == 11 || cursel == 12) {
-					la = Mix_Volume(0, -1);
-					lb = Mix_Volume(1, -1);
+					la = Mix_Volume(menuchannel, -1);
+					lb = Mix_Volume(musicchannel, -1);
 
 					if(keys[SDLK_LEFT]) {
 						if(cursel == 11) {
