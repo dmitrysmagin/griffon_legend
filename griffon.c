@@ -1164,11 +1164,13 @@ void game_checkinputs()
 			break;
 		case SDLK_RETURN:
 			if(keys[SDLK_LALT] || keys[SDLK_RALT]) {
-				if(fullscreen && SDL_FULLSCREEN) {
-					fullscreen = HWACCEL | SDL_SWSURFACE;
+				if(fullscreen & SDL_FULLSCREEN) {
+					fullscreen = HWACCEL | HWSURFACE;
 				} else {
 					fullscreen = SDL_FULLSCREEN | HWACCEL | HWSURFACE;
 				}
+
+				opfullscreen = fullscreen & SDL_FULLSCREEN;
 
 				video = SDL_SetVideoMode(SCR_WIDTH, SCR_HEIGHT, SCR_BITS, fullscreen);
 				SDL_UpdateRect(video, 0, 0, SCR_WIDTH, SCR_HEIGHT);
@@ -8377,8 +8379,7 @@ void sys_initialize()
 	SCR_TOPX = SCR_WIDTH / 2 - 160;
 	SCR_TOPY = SCR_HEIGHT / 2 - 120;
 
-	fullscreen = opfullscreen | HWACCEL | SDL_SWSURFACE;
-	// fullscreen = SDL_FULLSCREEN | HWACCEL | SDL_HWSURFACE;
+	fullscreen = opfullscreen | HWACCEL | HWSURFACE;
 
 	result = SDL_Init(SDL_INIT_EVERYTHING);
 	if(result) {
