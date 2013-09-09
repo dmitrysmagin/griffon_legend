@@ -8762,6 +8762,7 @@ void sys_progress(int w, int wm)
 	rcDest.w = w * 74 / wm;
 	SDL_FillRect(video, &rcDest, ccc);
 	SDL_Flip(video);
+	SDL_PumpEvents();
 }
 
 void sys_setupAudio()
