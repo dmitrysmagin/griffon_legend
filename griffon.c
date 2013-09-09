@@ -575,6 +575,21 @@ int invmap[4][7][13] = {
 	}
 };
 
+// HELPER MACRO ---------------------------------------------------------------
+#define PRINT(A,B) 			\
+do {					\
+	char line[256];			\
+	sprintf(line, A "\n", B);	\
+	fputs(line, fp);		\
+} while(0)
+
+#define INPUT(A, B)			\
+do {					\
+	char line[256];			\
+	fgets(line, sizeof(line), fp);	\
+	sscanf(line, A, B);		\
+} while(0)
+
 // CODE GOES HERE -------------------------------------------------------------
 
 // copypaste from hRnd_CRT()
@@ -4099,13 +4114,6 @@ void game_handlewalking()
 
 void game_loadmap(int mapnum)
 {
-#define INPUT(A, B)				\
-	do {					\
-		char line[256];			\
-		fgets(line, sizeof(line), fp);	\
-		sscanf(line, A, B);		\
-	} while(0);
-
 	unsigned int ccc;
 	SDL_Rect trect;
 	FILE *fp;
@@ -4876,7 +4884,6 @@ void game_loadmap(int mapnum)
 		}
 
 	SDL_BlitSurface(clipbg, NULL, clipbg2, NULL);
-#undef INPUT
 }
 
 void game_main()
@@ -5176,20 +5183,6 @@ void game_processtrigger(int trignum)
 		floaticon[i][0] = 0;
 	}
 }
-
-#define PRINT(A,B) 			\
-do {					\
-	char line[256];			\
-	sprintf(line, A "\n", B);	\
-	fputs(line, fp);		\
-} while(0)
-
-#define INPUT(A, B)			\
-do {					\
-	char line[256];			\
-	fgets(line, sizeof(line), fp);	\
-	sscanf(line, A, B);		\
-} while(0)
 
 void game_saveloadnew()
 {
