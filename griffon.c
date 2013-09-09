@@ -2364,11 +2364,8 @@ void game_drawanims(int Layer)
 void game_drawhud()
 {
 	char line[128];
-	sprintf(line, "fps: %i, map: %i, fl: %i", (int)fps, curmap, scriptflag[60][0]);
+	sprintf(line, "fps: %i, map: %i", (int)fps, curmap);
 	sys_print(videobuffer, line, 0, 0, 0);
-
-	sprintf(line, "px: %f, py: %f", player.px, player.py);
-	sys_print(videobuffer, line, 0, 8, 0);
 
 	long ccc;
 
