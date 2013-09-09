@@ -1836,7 +1836,7 @@ void game_damagenpc(int npcnum, int damage, int spell)
 	float npx, npy;
 	int lx, ly, cx, cy, alive;
 	char line[256];
-	float ratio;
+	int ratio;
 	int fcol, heal, ff;
 
 	if(damage == 0) {
@@ -1850,7 +1850,7 @@ void game_damagenpc(int npcnum, int damage, int spell)
 
 		if(heal == 0) {
 			if(damage > npcinfo[npcnum].hp) {
-				ratio = (damage - npcinfo[npcnum].hp) / damage;
+				ratio = (damage - npcinfo[npcnum].hp) * 100 / damage;
 				damage = npcinfo[npcnum].hp;
 			}
 		} else {
@@ -1867,7 +1867,7 @@ void game_damagenpc(int npcnum, int damage, int spell)
 
 		sprintf(line, "-%i", damage);
 		fcol = 1;
-		if(spell == 0) player.attackstrength = ratio * 100;
+		if(spell == 0) player.attackstrength = ratio;
 
 		if(heal == 1) {
 			sprintf(line, "+%i", damage);
@@ -5063,7 +5063,7 @@ __exit_do:
 	player.maxhp = player.hp;
 
 	player.sworddamage = player.level * 2;
-	player.spelldamage = player.level * 1.5;
+	player.spelldamage = player.level * 3 / 2;
 
 	player.px = 15*16 - 4;
 	player.py = 6*16 - 4;
@@ -8940,8 +8940,8 @@ void sys_update()
 		if(player.maxhp > 999) player.maxhp = 999;
 		player.hp = player.maxhp;
 
-		player.sworddamage = player.level * 1.4;
-		player.spelldamage = player.level * 1.3;
+		player.sworddamage = player.level * 14 / 10;
+		player.spelldamage = player.level * 13 / 10;
 
 		if(menabled == 1 && opeffects == 1) {
 			int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
