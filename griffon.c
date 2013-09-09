@@ -1493,8 +1493,6 @@ void game_configmenu()
 	SDL_SetColorKey(configwindow, SDL_SRCCOLORKEY, SDL_MapRGB(configwindow->format, 255, 0, 255));
 	SDL_SetAlpha(configwindow, SDL_SRCALPHA, 160);
 
-	/*dim fil$(20)*/
-
 	ticks1 = ticks;
 	do {
 		rc.x = 0;
@@ -1787,31 +1785,24 @@ void game_configmenu()
 					if(cursel == 10 && opeffects == 1) opeffects = 0;
 
 					if(cursel == 13) {
-						/*open "config.ini" for(int input as #1
-							for(int i = 0; i <= 14; i++) {
-								input #1, fil$(i)
-							}
-						close #1
-						open "config.ini" for(int output as #1
-							print #1, fil$(0)
-							print #1, SCR_WIDTH
-							print #1, fil$(2)
-							print #1, SCR_HEIGHT
-							print #1, fil$(4)
-							print #1, SCR_BITS
-							print #1, fil$(6)
-							print #1, fil$(7)
-							if(opfullscreen = 0) print #1, "FULLSCREEN:NO"
-							if(opfullscreen != 0) print #1, "FULLSCREEN:YES"
-							if(opmusic = 0) print #1, "MUSIC:NO"
-							if(opmusic = 1) print #1, "MUSIC:YES"
-							if(opeffects = 0) print #1, "SNDEFFECTS:NO"
-							if(opeffects = 1) print #1, "SNDEFFECTS:YES"
-							print #1, fil$(11)
-							print #1, opmusicvol
-							print #1, fil$(13)
-							print #1, opeffectsvol
-						close #1*/
+						FILE *fp = fopen("config.ini", "w");
+
+						PRINT("%s", "SCR_WIDTH:");
+						PRINT("%i", SCR_WIDTH);
+						PRINT("%s", "SCR_HEIGHT:");
+						PRINT("%i", SCR_HEIGHT);
+						PRINT("%s", "SCR_BITS:");
+						PRINT("%i", SCR_BITS);
+						PRINT("%s", HWACCEL ? "HWACCEL:YES" : "HWACCEL:NO");
+						PRINT("%s", HWSURFACE ? "HWSURFACE:YES" : "HWSURFACE:NO");
+						PRINT("%s", opfullscreen ? "FULLSCREEN:YES" : "FULLSCREEN:NO");
+						PRINT("%s", opmusic ? "MUSIC:YES" : "MUSIC:NO");
+						PRINT("%s", opeffects ? "SNDEFFECTS:YES" : "SNDEFFECTS:NO");
+						PRINT("%s", "opmusicvol:");
+						PRINT("%i", opmusicvol);
+						PRINT("%s", "opeffectsvol:");
+						PRINT("%i", opeffectsvol);
+						fclose(fp);
 
 						break;
 					}
