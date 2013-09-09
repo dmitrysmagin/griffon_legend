@@ -2364,7 +2364,7 @@ void game_drawanims(int Layer)
 void game_drawhud()
 {
 	char line[128];
-	sprintf(line, "fps: %i, map: %i", (int)fps, curmap);
+	sprintf(line, "fps: %i, map: %i, exp: %i/%i", (int)fps, curmap, player.exp, player.nextlevel);
 	sys_print(videobuffer, line, 0, 0, 0);
 
 	long ccc;
@@ -2575,7 +2575,7 @@ void game_drawhud()
 		if(player.level == 22) strcpy(line, "Level : MAX");
 		sys_print(videobuffer, line, sx, sy + 8, 0);
 
-		int mx = player.exp / player.level * 14;
+		int mx = player.exp * 14 / player.nextlevel;
 		if(mx > 14) mx = 14;
 
 		ccc = SDL_MapRGB(videobuffer->format, 0, 32, 32);
@@ -8935,8 +8935,7 @@ void sys_update()
 		player.level = player.level + 1;
 		game_addFloatText("LEVEL UP!", player.px + 16 - 36, player.py + 16, 3);
 		player.exp = player.exp - player.nextlevel;
-		// player.nextlevel = player.level * 75;
-		player.nextlevel = player.nextlevel * 2;
+		player.nextlevel = player.nextlevel * 3 / 2; // 1.5
 		player.maxhp = player.maxhp + player.level * 3;
 		if(player.maxhp > 999) player.maxhp = 999;
 		player.hp = player.maxhp;
