@@ -8322,8 +8322,17 @@ void sys_initialize()
 	for(int i = 0; i <= MAXFLOAT; i++)
 		floatstri[i] = malloc(64); // 64 bytes each string (should be enough)
 
+	// set default values
+	SCR_WIDTH = 320;
+	SCR_HEIGHT = 240;
+	SCR_BITS = 32;
 	HWACCEL = 0;
 	HWSURFACE = SDL_SWSURFACE;
+	opfullscreen = 0;
+	opmusic = 1;
+	opeffects = 1;
+	opmusicvol = 127;
+	opeffectsvol = 127;
 
 	fp = fopen("config.ini", "r");
 	if(fp) {
