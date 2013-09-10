@@ -5500,7 +5500,7 @@ void game_saveloadnew()
 					INPUT("%f", &playera.spellcharge[i]);
 				}
 				for(int a = 0; a <= 4; a++) {
-					INPUT("%i", &inventory[a]);
+					int b; INPUT("%i", &b);
 				}
 				INPUT("%i", &playera.foundcrystal);
 				INPUT("%f", &playera.crystalcharge);
