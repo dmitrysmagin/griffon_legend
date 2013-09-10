@@ -6,7 +6,7 @@
    5 - find sword - obj 9
    6 - regular key chest
    7 - blue flask
-   8 - garden// s master key
+   8 - garden's master key
    9 - lightning bomb
   10 - blue flask chest
   11 - lightning chest
@@ -134,7 +134,7 @@ typedef struct {
 	int	parentID;
 	int	isbase;
 	int	sprite;
-	int	bonelength;	// the // bone//  that connects the body sections
+	int	bonelength;	// the 'bone' that connects the body sections
 } BODYSECTIONTYPE;
 
 
@@ -298,11 +298,11 @@ int SCR_WIDTH, SCR_HEIGHT, SCR_BITS, SCR_TOPX, SCR_TOPY;
 SDL_Surface *mapbg, *clipbg, *clipbg2;
 unsigned int clipsurround[4][4];
 int fullscreen;
-//int walklimits[7] = {5 * 16, 5 * 16, 14 * 16, 9 * 16, 320, 144};
+
 Uint8 *keys;
 float animspd;
 int rampdata[40][24];
-//JOYINFO joystickinfo;
+
 int curmap;
 SDL_Surface *fontchr[224][5]; // 256 - 32
 SDL_Surface *itemimg[21], *windowimg;
@@ -639,8 +639,8 @@ void game_attack()
 	npx = player.px + 12;
 	npy = player.py + 20;
 
-	int lx = (int)npx / 16; //(int)npx / 16; //(npx - (npx % 16)) / 16;
-	int ly = (int)npy / 16; //(int)npy / 16; //(npy - (npy % 16)) / 16;
+	int lx = (int)npx / 16;
+	int ly = (int)npy / 16;
 
 	// if facing up
 	if(player.walkdir == 0) {
@@ -1054,12 +1054,6 @@ void game_castspell(int spellnum, float homex, float homey, float enemyx, float 
 						if((objmap[x][y] == 1 || objmap[x][y] == 2) && nballs < 5 && (int)(RND() * 4) == 0) {
 							int ax = x * 16;
 							int ay = y * 16;
-							/*int bx = player.px + 4; // useless code ??
-							int by = player.py + 4;
-							float d = sqr((bx - ax) ^ 2 + (by - ay) ^ 2);
-
-							float tx = (bx - ax) / d;
-							float ty = (by - ay) / d;*/
 
 							spellinfo[i].fireballs[nballs][0] = ax;
 							spellinfo[i].fireballs[nballs][1] = ay;
@@ -1145,7 +1139,6 @@ void game_checkhit()
 void game_checkinputs()
 {
 	int ntickdelay;
-	//JoyGetPos (0, &joystickinfo)
 
 	ntickdelay = 175;
 
@@ -1195,8 +1188,6 @@ void game_checkinputs()
 		case SDLK_SPACE:
 			if(itemselon == 0 && itemticks < ticks) game_attack();
 
-			//SDL_SaveBMP(video, "shot.bmp");
-
 			if(itemselon == 1 && itemticks < ticks) {
 				if(curitem == 0 && inventory[0] > 0) {
 					itemticks = ticks + ntickdelay;
@@ -1208,7 +1199,6 @@ void game_checkinputs()
 
 					player.hp = player.hp + heal;
 
-					//t$ = "+" + ltrim$(rtrim$(str$(heal)], 0);
 					char text[256];
 					sprintf(text, "+%i", heal);
 					game_addFloatText(text, player.px + 16 - 4 * strlen(text), player.py + 16, 5);
@@ -1234,7 +1224,6 @@ void game_checkinputs()
 
 					player.hp = player.hp + heal;
 
-					//t$ = "+" + ltrim$(rtrim$(str$(heal)], 0);
 					char text[256];
 					sprintf(text, "+%i", heal);
 					game_addFloatText(text, player.px + 16 - 4 * strlen(text), player.py + 16, 5);
@@ -1466,8 +1455,8 @@ void game_checktrigger()
 	npx = player.px + 12;
 	npy = player.py + 20;
 
-	lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-	ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+	lx = (int)npx / 16;
+	ly = (int)npy / 16;
 
 	canusekey = 0;
 
@@ -1579,9 +1568,6 @@ void game_configmenu()
 			sys_print(videobuffer, vl[i], 164, sy + i * 8, cl);
 		}
 
-		//int y = 156;
-		//int x = 160 - 9 * 4;
-
 		curselt = cursel;
 		if(cursel > 4) curselt = curselt + 1;
 		if(cursel > 6) curselt = curselt + 1;
@@ -1689,7 +1675,7 @@ void game_configmenu()
 
 				if(keys[SDLK_UP]) cursel = cursel - 1;
 				if(keys[SDLK_DOWN]) cursel = cursel + 1;
-				//if(event.key.keysym.sym == SDLK_SPACE || event.key.keysym.sym == SDLK_RETURN) {
+
 				if(keys[SDLK_SPACE] || keys[SDLK_RETURN]) {
 					if(cursel == 0) {
 						fullscreen = opfullscreen | HWACCEL | HWSURFACE;
@@ -1886,8 +1872,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = npcinfo[npcnum].x + 12;
 				npy = npcinfo[npcnum].y + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(objmap[lx][ly] == -1) objmap[lx][ly] = 4;
 			}
@@ -1899,8 +1885,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = npcinfo[npcnum].x + 12;
 				npy = npcinfo[npcnum].y + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(objmap[lx][ly] == -1) objmap[lx][ly] = 12;
 			}
@@ -1912,8 +1898,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = npcinfo[npcnum].x + 12;
 				npy = npcinfo[npcnum].y + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(objmap[lx][ly] == -1) objmap[lx][ly] = 13;
 			}
@@ -1940,8 +1926,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = player.px + 12;
 				npy = player.py + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(lx == cx && ly == cy) player.py = player.py + 16;
 				SDL_FillRect(clipbg2, &rcDest, SDL_MapRGB(clipbg->format, 255,255,255));
@@ -1970,8 +1956,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = player.px + 12;
 				npy = player.py + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(lx == cx && ly == cy) player.py = player.py + 16;
 				scriptflag[3][0] = 1;
@@ -2026,8 +2012,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = player.px + 12;
 				npy = player.py + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(lx == cx && ly == cy) player.py = player.py + 16;
 				scriptflag[5][0] = 1;
@@ -2057,8 +2043,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = player.px + 12;
 				npy = player.py + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(lx == cx && ly == cy) player.py = player.py + 16;
 				SDL_FillRect(clipbg2, &rcDest, SDL_MapRGB(clipbg->format, 255,255,255));
@@ -2088,8 +2074,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 					npx = player.px + 12;
 					npy = player.py + 20;
 
-					lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-					ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+					lx = (int)npx / 16;
+					ly = (int)npy / 16;
 
 					if(lx == cx && ly == cy) player.py = player.py + 16;
 					scriptflag[s][0] = 1;
@@ -2119,8 +2105,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = player.px + 12;
 				npy = player.py + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(lx == cx && ly == cy) player.py = player.py + 16;
 			}
@@ -2147,8 +2133,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = player.px + 12;
 				npy = player.py + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(lx == cx && ly == cy) player.py = player.py + 16;
 				scriptflag[12][0] = 1;
@@ -2177,8 +2163,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = player.px + 12;
 				npy = player.py + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(lx == cx && ly == cy) player.py = player.py + 16;
 				SDL_FillRect(clipbg2, &rcDest, SDL_MapRGB(clipbg->format, 255,255,255));
@@ -2207,8 +2193,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = player.px + 12;
 				npy = player.py + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(lx == cx && ly == cy) player.py = player.py + 16;
 				SDL_FillRect(clipbg2, &rcDest, SDL_MapRGB(clipbg->format, 255,255,255));
@@ -2227,8 +2213,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = player.px + 12;
 				npy = player.py + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(lx == cx && ly == cy) player.py = player.py + 16;
 				SDL_FillRect(clipbg2, &rcDest, SDL_MapRGB(clipbg->format, 255,255,255));
@@ -2248,8 +2234,8 @@ void game_damagenpc(int npcnum, int damage, int spell)
 				npx = player.px + 12;
 				npy = player.py + 20;
 
-				lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-				ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+				lx = (int)npx / 16;
+				ly = (int)npy / 16;
 
 				if(lx == cx && ly == cy) player.py = player.py + 16;
 				SDL_FillRect(clipbg2, &rcDest, SDL_MapRGB(clipbg->format, 255,255,255));
@@ -2788,8 +2774,6 @@ void game_drawnpcs(int mode)
 			if(npcinfo[i].hp > 0) {
 				int npx = (int)(npcinfo[i].x);
 				int npy = (int)(npcinfo[i].y);
-
-				// if((npy <= player.py AND mode = 0) OR (npy > player.py AND mode = 1)) {
 
 				int sprite = npcinfo[i].spriteset;
 
@@ -3333,8 +3317,8 @@ void game_drawover(int modx, int mody)
 	int npx = modx + 12;
 	int npy = mody + 20;
 
-	int lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-	int ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+	int lx = (int)npx / 16;
+	int ly = (int)npy / 16;
 
 	for(int xo = -1; xo <= 1; xo++) {
 		for(int yo = -1; yo <= 1; yo++) {
@@ -3531,8 +3515,6 @@ void game_endofgame()
 	rc2.y = SCR_TOPY;
 	rc2.w = 320;
 	rc2.h = 240;
-
-	//x = 160 - 4 * len(stri$)
 
 	ticks = SDL_GetTicks();
 	pauseticks = ticks + 500;
@@ -3865,8 +3847,8 @@ void game_handlewalking()
 
 	npx = px + 12;
 	npy = py + 20;
-	int lx = (int)npx / 16; //(npx - ((int)npx % 16)) / 16;
-	int ly = (int)npy / 16; //(npy - ((int)npy % 16)) / 16;
+	int lx = (int)npx / 16;
+	int ly = (int)npy / 16;
 
 	int ramp = rampdata[lx][ly];
 	if(ramp == 1 && movingup) spd = spd * 2;
@@ -4675,8 +4657,8 @@ void game_loadmap(int mapnum)
 		npx = player.px + 12;
 		npy = player.py + 20;
 
-		lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-		ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+		lx = (int)npx / 16;
+		ly = (int)npy / 16;
 
 		if(lx == cx && ly == cy) player.py = player.py + 16;
 
@@ -4698,8 +4680,8 @@ void game_loadmap(int mapnum)
 		npx = player.px + 12;
 		npy = player.py + 20;
 
-		lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-		ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+		lx = (int)npx / 16;
+		ly = (int)npy / 16;
 
 		if(lx == cx && ly == cy) player.py = player.py + 16;
 
@@ -4721,8 +4703,8 @@ void game_loadmap(int mapnum)
 		npx = player.px + 12;
 		npy = player.py + 20;
 
-		lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-		ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+		lx = (int)npx / 16;
+		ly = (int)npy / 16;
 
 		if(lx == cx && ly == cy) player.py = player.py + 16;
 
@@ -4744,8 +4726,8 @@ void game_loadmap(int mapnum)
 		npx = player.px + 12;
 		npy = player.py + 20;
 
-		lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-		ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+		lx = (int)npx / 16;
+		ly = (int)npy / 16;
 
 		if(lx == cx && ly == cy) player.py = player.py + 16;
 
@@ -4767,8 +4749,8 @@ void game_loadmap(int mapnum)
 		npx = player.px + 12;
 		npy = player.py + 20;
 
-		lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-		ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+		lx = (int)npx / 16;
+		ly = (int)npy / 16;
 
 		if(lx == cx && ly == cy) player.py = player.py + 16;
 
@@ -4790,8 +4772,8 @@ void game_loadmap(int mapnum)
 		npx = player.px + 12;
 		npy = player.py + 20;
 
-		lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-		ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+		lx = (int)npx / 16;
+		ly = (int)npy / 16;
 
 		if(lx == cx && ly == cy) player.py = player.py + 16;
 
@@ -4814,8 +4796,8 @@ void game_loadmap(int mapnum)
 		npx = player.px + 12;
 		npy = player.py + 20;
 
-		lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-		ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+		lx = (int)npx / 16;
+		ly = (int)npy / 16;
 
 		if(lx == cx && ly == cy) player.py = player.py + 16;
 
@@ -4836,8 +4818,8 @@ void game_loadmap(int mapnum)
 		npx = player.px + 12;
 		npy = player.py + 20;
 
-		lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-		ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+		lx = (int)npx / 16;
+		ly = (int)npy / 16;
 
 		if(lx == cx && ly == cy) player.py = player.py + 16;
 
@@ -4858,8 +4840,8 @@ void game_loadmap(int mapnum)
 		npx = player.px + 12;
 		npy = player.py + 20;
 
-		lx = (int)npx / 16; //(npx - (npx % 16)) / 16;
-		ly = (int)npy / 16; //(npy - (npy % 16)) / 16;
+		lx = (int)npx / 16;
+		ly = (int)npy / 16;
 
 		if(lx == cx && ly == cy) player.py = player.py + 16;
 
@@ -4899,8 +4881,6 @@ void game_newgame()
 	rc2.h = 240;
 
 
-	//x = 160 - 4 * len(stri$) // ??
-
 	ticks = SDL_GetTicks();
 	pauseticks = ticks + 500;
 	bticks = ticks;
@@ -4908,10 +4888,6 @@ void game_newgame()
 
 	SDL_BlitSurface(videobuffer, NULL, videobuffer3, NULL);
 	SDL_BlitSurface(video, &rc2, videobuffer2, NULL);
-
-	//cursel = 0;
-
-	//keypause = ticks + 220;
 
 	fpsr = 0.0;
 	int y = 140;
@@ -5880,9 +5856,6 @@ void game_title(int mode)
 	rc2.w = 320;
 	rc2.h = 240;
 
-	//x = 160 - 4 * len(stri$); // ??
-
-	//pauseticks = ticks + 500; // ??
 	ticks = SDL_GetTicks();
 
 	SDL_BlitSurface(videobuffer, NULL, videobuffer3, NULL);
@@ -6448,8 +6421,8 @@ void game_updnpcs()
 				float anpx = npx + 12;
 				float anpy = npy + 20;
 
-				int lx = (int)anpx / 16; //(anpx - (anpx % 16)) / 16;
-				int ly = (int)anpy / 16; //(anpy - (anpy % 16)) / 16;
+				int lx = (int)anpx / 16;
+				int ly = (int)anpy / 16;
 
 				if(triggerloc[lx][ly] > -1) bgc = 1;
 				if(npcinfo[i].spriteset == 11) bgc = 0;
@@ -7323,7 +7296,6 @@ void game_updspells()
 				rcSrc.h = 48;
 
 				float c1 = (32 - spellinfo[i].frame) / 16;
-				//float c = sin(3.14159 * 2 * c1);
 
 				float halfx = (spellinfo[i].homex-12) + ((spellinfo[i].enemyx-12) - (spellinfo[i].homex-12)) / 2;
 				float halfy = (spellinfo[i].homey-12) + ((spellinfo[i].enemyy-12) - (spellinfo[i].homey-12)) / 2;
@@ -7550,8 +7522,8 @@ void game_updspells()
 					npx = player.px + 12;
 					npy = player.py + 20;
 
-					int lx = (int)npx / 16; //(npx - (npx MOD 16)) / 16
-					int ly = (int)npy / 16; //(npy - (npy MOD 16)) / 16
+					int lx = (int)npx / 16;
+					int ly = (int)npy / 16;
 
 					for(int f = 0; f <= 4; f++) {
 						foundel[f] = 0;
@@ -8004,7 +7976,6 @@ void game_updspellsunder()
 {
 
 	unsigned int dq, *temp;
-	/*float npx, npy, onpx, onpy;*/
 
 	if(forcepause == 1) return;
 
@@ -8704,11 +8675,6 @@ void sys_LoadObjectDB()
 {
 	FILE *fp;
 	char line[512];
-	// DIM SHARED objectinfo(255, 6)
-				// nframes,xtiles,ytiles,speed,type,script, update?
-
-	// DIM SHARED objecttile(255, 4, 2, 2, 1)
-				// [objnum] [frame] [x] [y] [tile/layer]
 
 	fp = fopen("objectdb.dat", "r");
 
@@ -8851,7 +8817,6 @@ void sys_update()
 	int pa, sx, sy;
 	float opx, opy, spd;
 
-	// SDL_UpdateRect video, 0, 0, SCR_WIDTH, SCR_HEIGHT
 	SDL_Flip(video);
 	SDL_PumpEvents();
 
