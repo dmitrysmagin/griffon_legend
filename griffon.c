@@ -1846,42 +1846,37 @@ void game_damagenpc(int npcnum, int damage, int spell)
 		ratio = 0;
 		heal = 0;
 		if(damage < 0) heal = 1;
-		if(damage < 0) damage = -damage;
+		damage = abs(damage);
 
 		if(heal == 0) {
 			if(damage > npcinfo[npcnum].hp) {
 				ratio = (damage - npcinfo[npcnum].hp) * 100 / damage;
 				damage = npcinfo[npcnum].hp;
 			}
+
+			npcinfo[npcnum].hp -= damage;
+			if(npcinfo[npcnum].hp < 0) npcinfo[npcnum].hp = 0;
+
+			sprintf(line, "-%i", damage);
+			fcol = 1;
 		} else {
-			if(damage > npcinfo[npcnum].maxhp - npcinfo[npcnum].hp) damage = npcinfo[npcnum].maxhp - npcinfo[npcnum].hp;
-		}
+			npcinfo[npcnum].hp += damage;
+			if(npcinfo[npcnum].hp > npcinfo[npcnum].maxhp) npcinfo[npcnum].hp = npcinfo[npcnum].maxhp;
 
-		npcinfo[npcnum].pause = ticks + 900;
-		if(npcinfo[npcnum].spriteset == 11) npcinfo[npcnum].pause = ticks + 900;
-
-		if(heal == 0) npcinfo[npcnum].hp = npcinfo[npcnum].hp - damage;
-		if(heal == 1) npcinfo[npcnum].hp = npcinfo[npcnum].hp + damage;
-
-		if(npcinfo[npcnum].hp > npcinfo[npcnum].maxhp) npcinfo[npcnum].hp = npcinfo[npcnum].maxhp;
-
-		sprintf(line, "-%i", damage);
-		fcol = 1;
-		if(spell == 0) player.attackstrength = ratio;
-
-		if(heal == 1) {
 			sprintf(line, "+%i", damage);
 			fcol = 5;
 		}
+
+		npcinfo[npcnum].pause = ticks + 900;
+
+		if(spell == 0) player.attackstrength = ratio;
 	}
 
 	game_addFloatText(line, npcinfo[npcnum].x + 12 - 4 * strlen(line), npcinfo[npcnum].y + 16, fcol);
 
-
 	if(npcinfo[npcnum].spriteset == 12) game_castspell(9, npcinfo[npcnum].x, npcinfo[npcnum].y, player.px, player.py, npcnum);
 
-	if(npcinfo[npcnum].hp < 0) npcinfo[npcnum].hp = 0;
-
+	// if enemy is killed
 	if(npcinfo[npcnum].hp == 0) {
 		player.exp = player.exp + npcinfo[npcnum].maxhp;
 
