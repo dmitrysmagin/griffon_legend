@@ -5,9 +5,9 @@
 
 NAME      = griffon
 CC        = gcc
-CFLAGS    = -O2 -Wall -Wextra -std=c99
+CFLAGS    = -g -O2 -Wall -Wextra -std=c99
 INCS      = -I.
-LDFLAGS   = -g
+LDFLAGS   =
 LIBS      = -lSDL -lSDL_image -lSDL_mixer
 
 OBJS      = griffon.o
