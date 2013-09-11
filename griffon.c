@@ -5237,66 +5237,68 @@ void game_saveloadnew()
 						char line[256];
 
 						sprintf(line, player_sav, currow - 1);
+
 						fp = fopen(line, "w");
+						if(fp) {
+							PRINT("%i", player.level);
 
-						PRINT("%i", player.level);
+							PRINT("%i", (secstart + secsingame));
+							PRINT("a", 0);
 
-						PRINT("%i", (secstart + secsingame));
-						PRINT("a", 0);
-
-						PRINT("%f", player.px);
-						PRINT("%f", player.py);
-						PRINT("%f", player.opx);
-						PRINT("%f", player.opy);
-						PRINT("%i", player.walkdir);
-						PRINT("%f", player.walkframe);
-						PRINT("%f", player.walkspd);
-						PRINT("%f", player.attackframe);
-						PRINT("%f", player.attackspd);
-						PRINT("%i", player.hp);
-						PRINT("%i", player.maxhp);
-						PRINT("%f", player.hpflash);
-						PRINT("%i", player.level);
-						PRINT("%i", player.sword);
-						PRINT("%i", player.shield);
-						PRINT("%i", player.armour);
-						for(int i = 0; i <= 5; i++) {
-							PRINT("%i", player.foundspell[i]);
-							PRINT("%f", player.spellcharge[i]);
-						}
-						for(int a = 0; a <= 4; a++) {
-							PRINT("%i", inventory[a]);
-						}
-						PRINT("%i", player.foundcrystal);
-						PRINT("%f", player.crystalcharge);
-						PRINT("%f", player.attackstrength);
-						PRINT("%i", player.spelldamage);
-						PRINT("%i", player.sworddamage);
-						PRINT("%i", player.masterkey);
-						PRINT("%i", player.exp);
-						PRINT("%i", player.nextlevel);
-						for(int a = 0; a <= 99; a++) {
-							for(int b = 0; b <= 9; b++) {
-								PRINT("%i", scriptflag[a][b]);
+							PRINT("%f", player.px);
+							PRINT("%f", player.py);
+							PRINT("%f", player.opx);
+							PRINT("%f", player.opy);
+							PRINT("%i", player.walkdir);
+							PRINT("%f", player.walkframe);
+							PRINT("%f", player.walkspd);
+							PRINT("%f", player.attackframe);
+							PRINT("%f", player.attackspd);
+							PRINT("%i", player.hp);
+							PRINT("%i", player.maxhp);
+							PRINT("%f", player.hpflash);
+							PRINT("%i", player.level);
+							PRINT("%i", player.sword);
+							PRINT("%i", player.shield);
+							PRINT("%i", player.armour);
+							for(int i = 0; i <= 5; i++) {
+								PRINT("%i", player.foundspell[i]);
+								PRINT("%f", player.spellcharge[i]);
 							}
-						}
-						PRINT("%i", curmap);
-
-						for(int a = 0; a <= 999; a++) {
-							for(int b = 0; b <= 20; b++) {
-								for(int c = 0; c <= 14; c++) {
-									PRINT("%i", objmapf[a][b][c]);
+							for(int a = 0; a <= 4; a++) {
+								PRINT("%i", inventory[a]);
+							}
+							PRINT("%i", player.foundcrystal);
+							PRINT("%f", player.crystalcharge);
+							PRINT("%f", player.attackstrength);
+							PRINT("%i", player.spelldamage);
+							PRINT("%i", player.sworddamage);
+							PRINT("%i", player.masterkey);
+							PRINT("%i", player.exp);
+							PRINT("%i", player.nextlevel);
+							for(int a = 0; a <= 99; a++) {
+								for(int b = 0; b <= 9; b++) {
+									PRINT("%i", scriptflag[a][b]);
 								}
 							}
+							PRINT("%i", curmap);
+
+							for(int a = 0; a <= 999; a++) {
+								for(int b = 0; b <= 20; b++) {
+									for(int c = 0; c <= 14; c++) {
+										PRINT("%i", objmapf[a][b][c]);
+									}
+								}
+							}
+
+							for(int a = 0; a <= 200; a++) {
+								PRINT("%i", roomlocks[a]);
+							}
+
+							PRINT("%f", player.spellstrength);
+
+							fclose(fp);
 						}
-
-						for(int a = 0; a <= 200; a++) {
-							PRINT("%i", roomlocks[a]);
-						}
-
-						PRINT("%f", player.spellstrength);
-
-						fclose(fp);
 
 						secstart = secstart + secsingame;
 						secsingame = 0;
@@ -5310,85 +5312,87 @@ void game_saveloadnew()
 						char line[256];
 
 						sprintf(line, player_sav, currow - 1);
+						
 						fp = fopen(line, "r");
-	
-						INPUT("%i", &player.level);
-						INPUT("%i", &secstart);
-						INPUT("%s", line);
+						if(fp) {
+							INPUT("%i", &player.level);
+							INPUT("%i", &secstart);
+							INPUT("%s", line);
 
-						INPUT("%f", &player.px);
-						INPUT("%f", &player.py);
-						INPUT("%f", &player.opx);
-						INPUT("%f", &player.opy);
-						INPUT("%i", &player.walkdir);
-						INPUT("%f", &player.walkframe);
-						INPUT("%f", &player.walkspd);
-						INPUT("%f", &player.attackframe);
-						INPUT("%f", &player.attackspd);
-						INPUT("%i", &player.hp);
-						INPUT("%i", &player.maxhp);
-						INPUT("%f", &player.hpflash);
-						INPUT("%i", &player.level);
-						INPUT("%i", &player.sword);
-						INPUT("%i", &player.shield);
-						INPUT("%i", &player.armour);
-						for(int i = 0; i <= 5; i++) {
-							INPUT("%i", &player.foundspell[i]);
-							INPUT("%f", &player.spellcharge[i]);
-						}
-						for(int a = 0; a <= 4; a++) {
-							INPUT("%i", &inventory[a]);
-						}
-
-						INPUT("%i", &player.foundcrystal);
-						INPUT("%f", &player.crystalcharge);
-						INPUT("%f", &player.attackstrength);
-						INPUT("%i", &player.spelldamage);
-						INPUT("%i", &player.sworddamage);
-						INPUT("%i", &player.masterkey);
-						INPUT("%i", &player.exp);
-						INPUT("%i", &player.nextlevel);
-						for(int a = 0; a <= 99; a++) {
-							for(int b = 0; b <= 9; b++) {
-								INPUT("%i", &scriptflag[a][b]);
+							INPUT("%f", &player.px);
+							INPUT("%f", &player.py);
+							INPUT("%f", &player.opx);
+							INPUT("%f", &player.opy);
+							INPUT("%i", &player.walkdir);
+							INPUT("%f", &player.walkframe);
+							INPUT("%f", &player.walkspd);
+							INPUT("%f", &player.attackframe);
+							INPUT("%f", &player.attackspd);
+							INPUT("%i", &player.hp);
+							INPUT("%i", &player.maxhp);
+							INPUT("%f", &player.hpflash);
+							INPUT("%i", &player.level);
+							INPUT("%i", &player.sword);
+							INPUT("%i", &player.shield);
+							INPUT("%i", &player.armour);
+							for(int i = 0; i <= 5; i++) {
+								INPUT("%i", &player.foundspell[i]);
+								INPUT("%f", &player.spellcharge[i]);
 							}
-						}
-						INPUT("%i", &curmap);
+							for(int a = 0; a <= 4; a++) {
+								INPUT("%i", &inventory[a]);
+							}
 
-						for(int a = 0; a <= 999; a++) {
-							for(int b = 0; b <= 20; b++) {
-								for(int c = 0; c <= 14; c++) {
-									INPUT("%i", &objmapf[a][b][c]);
+							INPUT("%i", &player.foundcrystal);
+							INPUT("%f", &player.crystalcharge);
+							INPUT("%f", &player.attackstrength);
+							INPUT("%i", &player.spelldamage);
+							INPUT("%i", &player.sworddamage);
+							INPUT("%i", &player.masterkey);
+							INPUT("%i", &player.exp);
+							INPUT("%i", &player.nextlevel);
+							for(int a = 0; a <= 99; a++) {
+								for(int b = 0; b <= 9; b++) {
+									INPUT("%i", &scriptflag[a][b]);
 								}
 							}
+							INPUT("%i", &curmap);
+
+							for(int a = 0; a <= 999; a++) {
+								for(int b = 0; b <= 20; b++) {
+									for(int c = 0; c <= 14; c++) {
+										INPUT("%i", &objmapf[a][b][c]);
+									}
+								}
+							}
+
+							for(int a = 0; a <= 200; a++) {
+								INPUT("%i", &roomlocks[a]);
+							}
+
+							INPUT("%f", &player.spellstrength);
+
+							player.walkspd = 1.1;
+							animspd = .5;
+							attacking = 0;
+							player.attackspd = 1.5;
+
+							pgardens = 0;
+							ptown = 0;
+							pboss = 0;
+							pacademy = 0;
+							pcitadel = 0;
+
+
+							fclose(fp);
+
+							Mix_HaltChannel(-1);
+
+							secsingame = 0;
+							saveslot = currow - 1;
+							game_loadmap(curmap);
+							game_playgame();
 						}
-
-						for(int a = 0; a <= 200; a++) {
-							INPUT("%i", &roomlocks[a]);
-						}
-
-						INPUT("%f", &player.spellstrength);
-
-						player.walkspd = 1.1;
-						animspd = .5;
-						attacking = 0;
-						player.attackspd = 1.5;
-
-						pgardens = 0;
-						ptown = 0;
-						pboss = 0;
-						pacademy = 0;
-						pcitadel = 0;
-
-
-						fclose(fp);
-
-						Mix_HaltChannel(-1);
-
-						secsingame = 0;
-						saveslot = currow - 1;
-						game_loadmap(curmap);
-						game_playgame();
 					}
 
 					tickpause = ticks + 125;
@@ -5447,51 +5451,55 @@ void game_saveloadnew()
 			char line[256];
 			int asecstart;
 
+			plevel = 0;
+
 			sprintf(line, player_sav, ff);
 
 			fp = fopen(line, "r");
+			if(fp) {
+				INPUT("%i", &plevel);
 
-			INPUT("%i", &plevel);
+				if(plevel > 0) {
+					playera.level = plevel;
 
-			if(plevel > 0) {
-				playera.level = plevel;
+					INPUT("%i", &asecstart);
+					INPUT("%s", line);
 
-				INPUT("%i", &asecstart);
-				INPUT("%s", line);
-
-				INPUT("%f", &playera.px);
-				INPUT("%f", &playera.py);
-				INPUT("%f", &playera.opx);
-				INPUT("%f", &playera.opy);
-				INPUT("%i", &playera.walkdir);
-				INPUT("%f", &playera.walkframe);
-				INPUT("%f", &playera.walkspd);
-				INPUT("%f", &playera.attackframe);
-				INPUT("%f", &playera.attackspd);
-				INPUT("%i", &playera.hp);
-				INPUT("%i", &playera.maxhp);
-				INPUT("%f", &playera.hpflash);
-				INPUT("%i", &playera.level);
-				INPUT("%i", &playera.sword);
-				INPUT("%i", &playera.shield);
-				INPUT("%i", &playera.armour);
-				for(int i = 0; i <= 5; i++) {
-					INPUT("%i", &playera.foundspell[i]);
-					INPUT("%f", &playera.spellcharge[i]);
+					INPUT("%f", &playera.px);
+					INPUT("%f", &playera.py);
+					INPUT("%f", &playera.opx);
+					INPUT("%f", &playera.opy);
+					INPUT("%i", &playera.walkdir);
+					INPUT("%f", &playera.walkframe);
+					INPUT("%f", &playera.walkspd);
+					INPUT("%f", &playera.attackframe);
+					INPUT("%f", &playera.attackspd);
+					INPUT("%i", &playera.hp);
+					INPUT("%i", &playera.maxhp);
+					INPUT("%f", &playera.hpflash);
+					INPUT("%i", &playera.level);
+					INPUT("%i", &playera.sword);
+					INPUT("%i", &playera.shield);
+					INPUT("%i", &playera.armour);
+					for(int i = 0; i <= 5; i++) {
+						INPUT("%i", &playera.foundspell[i]);
+						INPUT("%f", &playera.spellcharge[i]);
+					}
+					for(int a = 0; a <= 4; a++) {
+						int b; INPUT("%i", &b);
+					}
+					INPUT("%i", &playera.foundcrystal);
+					INPUT("%f", &playera.crystalcharge);
+					INPUT("%f", &playera.attackstrength);
+					INPUT("%i", &playera.spelldamage);
+					INPUT("%i", &playera.sworddamage);
+					INPUT("%i", &playera.masterkey);
+					INPUT("%i", &playera.exp);
+					INPUT("%i", &playera.nextlevel);
 				}
-				for(int a = 0; a <= 4; a++) {
-					int b; INPUT("%i", &b);
-				}
-				INPUT("%i", &playera.foundcrystal);
-				INPUT("%f", &playera.crystalcharge);
-				INPUT("%f", &playera.attackstrength);
-				INPUT("%i", &playera.spelldamage);
-				INPUT("%i", &playera.sworddamage);
-				INPUT("%i", &playera.masterkey);
-				INPUT("%i", &playera.exp);
-				INPUT("%i", &playera.nextlevel);
+
+				fclose(fp);
 			}
-			fclose(fp);
 
 			if(plevel > 0) {
 				int sx, sy, cc, ss, nx, ccc;
