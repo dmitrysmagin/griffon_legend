@@ -327,6 +327,10 @@ extern char *story2[27];
 // options
 int opfullscreen, opmusic = 1, opeffects = 1, opmusicvol, opeffectsvol;
 
+// paths for config.ini and player*.sav
+char config_ini[64] = "config.ini";
+char player_sav[61] = "data/player%i.sav";
+
 SDL_Rect rc, rc2, rcSrc, rcDest, rcSrc2;
 
 
@@ -1771,7 +1775,7 @@ void game_configmenu()
 					if(cursel == 10 && opeffects == 1) opeffects = 0;
 
 					if(cursel == 13) {
-						FILE *fp = fopen("config.ini", "w");
+						FILE *fp = fopen(config_ini, "w");
 
 						PRINT("%s", "SCR_WIDTH:");
 						PRINT("%i", SCR_WIDTH);
@@ -5232,7 +5236,7 @@ void game_saveloadnew()
 						FILE *fp;
 						char line[256];
 
-						sprintf(line, "data/player%i.sav", currow - 1);
+						sprintf(line, player_sav, currow - 1);
 						fp = fopen(line, "w");
 
 						PRINT("%i", player.level);
@@ -5305,7 +5309,7 @@ void game_saveloadnew()
 						FILE *fp;
 						char line[256];
 
-						sprintf(line, "data/player%i.sav", currow - 1);
+						sprintf(line, player_sav, currow - 1);
 						fp = fopen(line, "r");
 	
 						INPUT("%i", &player.level);
@@ -5443,7 +5447,7 @@ void game_saveloadnew()
 			char line[256];
 			int asecstart;
 
-			sprintf(line,"data/player%i.sav", ff);
+			sprintf(line, player_sav, ff);
 
 			fp = fopen(line, "r");
 
@@ -8260,12 +8264,32 @@ void game_updspellsunder()
 	}
 }
 
+void sys_initpaths()
+{
+#ifdef UNIX
+	char line[256];
+	char *home = getenv("HOME");
+	if(!home) return;
+
+	sprintf(line, "%s/.griffon", home);
+	mkdir(line, 0777);
+
+	strcpy(config_ini, line);
+	strcat(config_ini, "/config.ini");
+
+	strcpy(player_sav, line);
+	strcat(player_sav, "/player%i.sav");
+#endif
+}
+
 void sys_initialize()
 {
 	int result;
 	char line[128];
 	char arg[128];
 	FILE *fp;
+
+	sys_initpaths();
 
 	// init char *floatstri[MAXFLOAT]
 	for(int i = 0; i <= MAXFLOAT; i++)
@@ -8283,7 +8307,7 @@ void sys_initialize()
 	opmusicvol = 127;
 	opeffectsvol = 127;
 
-	fp = fopen("config.ini", "r");
+	fp = fopen(config_ini, "r");
 	if(fp) {
 		while(fgets(line, sizeof(line), fp) != NULL) {
 			sscanf(line, "%s", arg); // eliminate eol and eof by this
