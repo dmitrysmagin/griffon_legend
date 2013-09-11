@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=The Griffon Legend
+Comment=Action RPG game
+Exec=griffon.dge
+Terminal=false
+Type=Application
+StartupNotify=true
+Icon=griffon
+Categories=games;
