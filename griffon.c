@@ -50,6 +50,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <sys/stat.h>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
@@ -8274,7 +8275,7 @@ void game_updspellsunder()
 
 void sys_initpaths()
 {
-#ifdef UNIX
+#ifdef __unix__
 	char line[256];
 	char *home = getenv("HOME");
 	if(!home) return;
