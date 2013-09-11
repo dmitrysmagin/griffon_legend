@@ -9,6 +9,7 @@ FLIST="${FLIST} build/art build/data"
 FLIST="${FLIST} build/mapdb build/music"
 FLIST="${FLIST} build/sfx"
 FLIST="${FLIST} default.gcw0.desktop"
+FLIST="${FLIST} griffon.png"
 
 cat > default.gcw0.desktop <<EOF
 [Desktop Entry]
