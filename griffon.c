@@ -2342,8 +2342,8 @@ void game_drawanims(int Layer)
 void game_drawhud()
 {
 	char line[128];
-	sprintf(line, "fps: %i, map: %i, exp: %i/%i", (int)fps, curmap, player.exp, player.nextlevel);
-	sys_print(videobuffer, line, 0, 0, 0);
+	//sprintf(line, "fps: %i, map: %i, exp: %i/%i", (int)fps, curmap, player.exp, player.nextlevel);
+	//sys_print(videobuffer, line, 0, 0, 0);
 
 	long ccc;
 
