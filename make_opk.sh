@@ -3,15 +3,15 @@
 OPK_NAME=griffon.opk
 echo ${OPK_NAME}
 
-FLIST="griffon.dge"
+FLIST="build/griffon.dge"
 FLIST="${FLIST} build/objectdb.dat build/readme.txt"
 FLIST="${FLIST} build/art build/data"
 FLIST="${FLIST} build/mapdb build/music"
 FLIST="${FLIST} build/sfx"
-FLIST="${FLIST} default.gcw0.desktop"
-FLIST="${FLIST} griffon.png"
+FLIST="${FLIST} build/default.gcw0.desktop"
+FLIST="${FLIST} build/griffon.png"
 
-cat > default.gcw0.desktop <<EOF
+cat > build/default.gcw0.desktop <<EOF
 [Desktop Entry]
 Name=The Griffon Legend
 Comment=Action RPG game
@@ -23,7 +23,7 @@ Icon=griffon
 Categories=games;
 EOF
 
-rm ${OPK_NAME}
+rm -f ${OPK_NAME}
 mksquashfs ${FLIST} ${OPK_NAME}
 
 cat default.gcw0.desktop
