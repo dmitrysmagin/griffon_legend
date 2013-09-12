@@ -1096,8 +1096,7 @@ void game_castspell(int spellnum, float homex, float homey, float enemyx, float 
 
 void game_checkhit()
 {
-	/*unsigned int *temp, bgc;*/
-	float opx, opy, npx, npy;
+	float npx, npy;
 	float damage;
 
 	if(attacking == 1) {
@@ -1105,9 +1104,6 @@ void game_checkhit()
 			if(npcinfo[i].hp > 0 && npcinfo[i].pause < ticks && (int)(RND() * 2) == 0) {
 				npx = npcinfo[i].x;
 				npy = npcinfo[i].y;
-
-				opx = npx;
-				opy = npy;
 
 				float xdif = player.px - npx;
 				float ydif = player.py - npy;
@@ -1473,7 +1469,6 @@ void game_configmenu()
 	SDL_Surface *configwindow;
 	int cursel, curselt, ofullscreen;
 	int tickwait, keypause, ticks1;
-	int la = 0, lb = 0;
 
 	cursel = 0;
 
@@ -1631,9 +1626,6 @@ void game_configmenu()
 
 				if(keys[SDLK_ESCAPE]) break;
 				if(cursel == 11 || cursel == 12) {
-					la = Mix_Volume(menuchannel, -1);
-					lb = Mix_Volume(musicchannel, -1);
-
 					if(keys[SDLK_LEFT]) {
 						if(cursel == 11) {
 							opmusicvol = opmusicvol - 25;
@@ -2762,9 +2754,6 @@ void game_drawnpcs(int mode)
 
 	ccc = SDL_MapRGB(videobuffer->format, 255, 128, 32);
 
-	int lok = 0;
-	if(mode == 1) lok = 1;
-
 	int fst = firsty;
 	int lst = lasty;
 
@@ -3123,15 +3112,12 @@ void game_drawnpcs(int mode)
 
 
 					float frame = npcinfo[i].frame2;
-					int cframe = npcinfo[i].cframe;
 
 					frame = frame + 0.5 * fpsr;
 					while(frame >= 16)
 						frame = frame - 16;
 
 					npcinfo[i].frame2 = frame;
-
-					cframe = (int)(frame);
 
 					int sx = npx + 12 - 40;
 					int sy = (float)(npy + 12 - 50 - 3 * sin(3.141592 * 2 * npcinfo[i].floating / 16));
@@ -3504,7 +3490,7 @@ void game_drawview()
 void game_endofgame()
 {
 	float xofs = 0;
-	int ticks1, bticks, pauseticks, keypause;
+	int ticks1;
 
 	rcSrc.x = 0;
 	rcSrc.y = 0;
@@ -3522,10 +3508,6 @@ void game_endofgame()
 	rc2.h = 240;
 
 	ticks = SDL_GetTicks();
-	pauseticks = ticks + 500;
-	bticks = ticks;
-
-	keypause = ticks + 220;
 
 	float spd = 0.2;
 
@@ -4181,7 +4163,7 @@ void game_loadmap(int mapnum)
 			for(int l = 0; l <= 2; l++) {
 				int lx, ly, curtile, curtilelayer;
 				int curtilel, curtilex, curtiley;
-				int pass, ffa, ffb;
+				int ffa, ffb;
 
 				ly = y;
 				lx = x + l * 40;
@@ -4209,15 +4191,12 @@ void game_loadmap(int mapnum)
 					rcDest.w = 16;
 					rcDest.h = 16;
 
-					pass = 0;
-
 					if(l == 2 && curtilel == 1) {
 						for(int ff = 0; ff <= 5; ff++) {
 							ffa = 20 * 5 - 1 + ff * 20;
 							ffb = 20 * 5 + 4 + ff * 20;
 							if(curtile > ffa && curtile < ffb) {
 								SDL_SetAlpha(tiles[curtilel], SDL_SRCALPHA, 128);
-								pass = 1;
 							}
 						}
 					}
@@ -4226,7 +4205,6 @@ void game_loadmap(int mapnum)
 							ffa = 20 * (5 + ff) + 3;
 							if(curtile == ffa) {
 								SDL_SetAlpha(tiles[curtilel], SDL_SRCALPHA, 192);
-								pass = 1;
 							}
 						}
 					}
@@ -4254,7 +4232,6 @@ void game_loadmap(int mapnum)
 
 			int clip = 0;
 			int npc = 0;
-			int obj = 0;
 
 			if(scriptflag[4][0] == 1 && x == 9 && y == 7) d = 99;
 
@@ -4263,7 +4240,6 @@ void game_loadmap(int mapnum)
 				d = (d - clip) / 2;
 				npc = d % 2;
 				d = (d - npc) / 2;
-				obj = d % 2;
 
 				if(d == 99 && x == 9 && y == 7) clip = 1;
 
@@ -4866,7 +4842,7 @@ void game_newgame()
 {
 	float xofs = 0;
 	float ld = 0, add;
-	int ticks, bticks, pauseticks, cnt = 0;
+	int ticks, cnt = 0;
 
 	rcSrc.x = 0;
 	rcSrc.y = 0;
@@ -4887,9 +4863,6 @@ void game_newgame()
 
 
 	ticks = SDL_GetTicks();
-	pauseticks = ticks + 500;
-	bticks = ticks;
-
 
 	SDL_BlitSurface(videobuffer, NULL, videobuffer3, NULL);
 	SDL_BlitSurface(video, &rc2, videobuffer2, NULL);
@@ -5153,7 +5126,6 @@ void game_saveloadnew()
 	float y; int yy;
 	int currow, curcol, lowerlock;
 	int ticks, ticks1, tickpause;
-	int plevel, sx, sy;
 
 	clouddeg = 0;
 
@@ -5244,7 +5216,7 @@ void game_saveloadnew()
 							PRINT("%i", player.level);
 
 							PRINT("%i", (secstart + secsingame));
-							PRINT("a", 0);
+							PRINT("%s", "a");
 
 							PRINT("%f", player.px);
 							PRINT("%f", player.py);
@@ -5452,7 +5424,7 @@ void game_saveloadnew()
 			char line[256];
 			int asecstart;
 
-			plevel = 0;
+			int plevel = 0;
 
 			sprintf(line, player_sav, ff);
 
@@ -5503,7 +5475,7 @@ void game_saveloadnew()
 			}
 
 			if(plevel > 0) {
-				int sx, sy, cc, ss, nx, ccc;
+				int sx, sy, cc, ss, nx;
 
 				sx = 8;
 				sy = 57 + ff * 48;
@@ -5557,16 +5529,13 @@ void game_saveloadnew()
 
 					SDL_BlitSurface(itemimg[7], NULL, videobuffer, &rcSrc);
 
-					ccc = SDL_MapRGB(videobuffer->format, 0, 32, 32);
-
 					for(int i = 0; i <= 4; i++) {
 						rcSrc.x = rcSrc.x + 17;
 						if(playera.foundspell[i] == 1) SDL_BlitSurface(itemimg[8 + i], NULL, videobuffer, &rcSrc);
 					}
 				}
 			} else {
-				sx = 10;
-				sy = 57 + ff * 48;
+				int sy = 57 + ff * 48;
 				sys_print(videobuffer, "Empty", 160 - 5 * 4, sy, 0);
 			}
 		}
@@ -7299,7 +7268,7 @@ void game_updspells()
 
 			// metal
 			if(spellnum == 1 && forcepause == 0) {
-				float npx, npy, xdif, ydif;
+				float xdif, ydif;
 				int npc;
 				int fr = (int)((32 - spellinfo[i].frame)*4) % 3;
 
@@ -8030,11 +7999,6 @@ void game_updspellsunder()
 					if(dist > 20) dist = 20;
 
 					if(dist > 5) {
-						int xm = 1;
-						if(xdif < 0) xm = -1;
-						int ym = 1;
-						if(ydif < 0) ym = -1;
-
 						float ratio = (1 - dist / 25);
 
 						float newx = npcinfo[f].x + ratio * xdif / 3 * fpsr;
