@@ -373,8 +373,7 @@ float clouddeg = 0;
 int cloudson;
 
 // spell info
-SPELLTYPE spellinfo[MAXSPELL+1];
-
+SPELLTYPE spellinfo[MAXSPELL];
 
 // player info
 int movingup, movingdown, movingleft, movingright;
@@ -696,8 +695,7 @@ static float RND()
 
 void game_addFloatIcon(int ico, float xloc, float yloc)
 {
-	int i = 0;
-	do {
+	for(int i = 0; i < MAXFLOAT; i++) {
 		if(floaticon[i][0] == 0) {
 			floaticon[i][0] = 32;
 			floaticon[i][1] = xloc;
@@ -705,15 +703,12 @@ void game_addFloatIcon(int ico, float xloc, float yloc)
 			floaticon[i][3] = ico;
 			return;
 		}
-		i++;
-		if(i == MAXFLOAT) break;
-	} while(1);
+	}
 }
 
 void game_addFloatText(char *stri, float xloc, float yloc, int col)
 {
-	int i = 0;
-	do {
+	for(int i = 0; i < MAXFLOAT; i++) {
 		if(floattext[i][0] == 0) {
 			floattext[i][0] = 32;
 			floattext[i][1] = xloc;
@@ -722,9 +717,7 @@ void game_addFloatText(char *stri, float xloc, float yloc, int col)
 			strcpy(floatstri[i], stri);
 			return;
 		}
-		i++;
-		if(i == MAXFLOAT) break;
-	} while(1);
+	}
 }
 
 void game_attack()
@@ -1100,8 +1093,8 @@ void game_attack()
 void game_castspell(int spellnum, float homex, float homey, float enemyx, float enemyy, int damagewho)
 {
 	// spellnum 7 = sprite 6 spitfire
-	int i = 0;
-	do {
+
+	for(int i = 0; i < MAXSPELL; i++) {
 		if(spellinfo[i].frame == 0) {
 			spellinfo[i].homex = homex;
 			spellinfo[i].homey = homey;
@@ -1178,10 +1171,7 @@ void game_castspell(int spellnum, float homex, float homey, float enemyx, float 
 
 			return;
 		}
-
-		i = i + 1;
-		if(i == MAXSPELL+1) break;
-	} while(1);
+	}
 }
 
 void game_checkhit()
@@ -4176,7 +4166,7 @@ void game_loadmap(int mapnum)
 	if((mapnum == 53 || mapnum == 57 || mapnum == 61 || mapnum == 65 || mapnum == 62) && scriptflag[60][0] > 0) mapnum = mapnum + 100;
 	if((mapnum == 161 || mapnum == 162) && scriptflag[60][0] == 2) mapnum = mapnum + 100;
 
-	for(int i = 0; i <= MAXSPELL; i++)
+	for(int i = 0; i < MAXSPELL; i++)
 		spellinfo[i].frame = 0;
 
 	roomlock = 0;
@@ -5841,8 +5831,6 @@ void game_swash()
 
 void game_theend()
 {
-	float y;
-
 	rcDest.x = 0;
 	rcDest.y = 0;
 	rcDest.w = 320;
@@ -5851,16 +5839,12 @@ void game_theend()
 	rc2.x = SCR_TOPX;
 	rc2.y = SCR_TOPY;
 
-
-	y = 0;
 	for(int i = 0; i < MAXFLOAT; i++) {
 		floattext[i][0] = 0;
 		floaticon[i][0] = 0;
 	}
 
-	do {
-		y = y + 1 * fpsr;
-
+	for(float y = 0; y < 100; y += fpsr) {
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, (int)y);
 		SDL_FillRect(videobuffer, &rcDest, 0);
 		SDL_BlitSurface(videobuffer, &rcDest, video, &rc2);
@@ -5880,9 +5864,7 @@ void game_theend()
 			fps = fp;
 			fp = 0;
 		}
-
-		if(y > 100) break;
-	} while(1);
+	}
 
 	game_title(0);
 }
@@ -7219,7 +7201,7 @@ void game_updspells()
 
 	float xloc = 0, yloc = 0, xst, yst, xdif, ydif;
 
-	for(int i = 0; i <= MAXSPELL; i++) {
+	for(int i = 0; i < MAXSPELL; i++) {
 		if(spellinfo[i].frame > 0) {
 			int spellnum = spellinfo[i].spellnum;
 
@@ -8033,7 +8015,7 @@ void game_updspellsunder()
 
 	if(forcepause == 1) return;
 
-	for(int i = 0; i <= MAXSPELL; i++) {
+	for(int i = 0; i < MAXSPELL; i++) {
 		if(spellinfo[i].frame > 0) {
 			int spellnum = spellinfo[i].spellnum;
 
