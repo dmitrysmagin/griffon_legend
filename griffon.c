@@ -5261,60 +5261,62 @@ void game_saveloadnew()
 						if(fp) {
 							PRINT("%i", player.level);
 
-							PRINT("%i", (secstart + secsingame));
-							PRINT("%s", "a");
+							if(player.level > 0) {
+								PRINT("%i", (secstart + secsingame));
+								PRINT("%s", "a");
 
-							PRINT("%f", player.px);
-							PRINT("%f", player.py);
-							PRINT("%f", player.opx);
-							PRINT("%f", player.opy);
-							PRINT("%i", player.walkdir);
-							PRINT("%f", player.walkframe);
-							PRINT("%f", player.walkspd);
-							PRINT("%f", player.attackframe);
-							PRINT("%f", player.attackspd);
-							PRINT("%i", player.hp);
-							PRINT("%i", player.maxhp);
-							PRINT("%f", player.hpflash);
-							PRINT("%i", player.level);
-							PRINT("%i", player.sword);
-							PRINT("%i", player.shield);
-							PRINT("%i", player.armour);
-							for(int i = 0; i <= 5; i++) {
-								PRINT("%i", player.foundspell[i]);
-								PRINT("%f", player.spellcharge[i]);
-							}
-							for(int a = 0; a <= 4; a++) {
-								PRINT("%i", inventory[a]);
-							}
-							PRINT("%i", player.foundcrystal);
-							PRINT("%f", player.crystalcharge);
-							PRINT("%f", player.attackstrength);
-							PRINT("%i", player.spelldamage);
-							PRINT("%i", player.sworddamage);
-							PRINT("%i", player.masterkey);
-							PRINT("%i", player.exp);
-							PRINT("%i", player.nextlevel);
-							for(int a = 0; a <= 99; a++) {
-								for(int b = 0; b <= 9; b++) {
-									PRINT("%i", scriptflag[a][b]);
+								PRINT("%f", player.px);
+								PRINT("%f", player.py);
+								PRINT("%f", player.opx);
+								PRINT("%f", player.opy);
+								PRINT("%i", player.walkdir);
+								PRINT("%f", player.walkframe);
+								PRINT("%f", player.walkspd);
+								PRINT("%f", player.attackframe);
+								PRINT("%f", player.attackspd);
+								PRINT("%i", player.hp);
+								PRINT("%i", player.maxhp);
+								PRINT("%f", player.hpflash);
+								PRINT("%i", player.level);
+								PRINT("%i", player.sword);
+								PRINT("%i", player.shield);
+								PRINT("%i", player.armour);
+								for(int i = 0; i <= 5; i++) {
+									PRINT("%i", player.foundspell[i]);
+									PRINT("%f", player.spellcharge[i]);
 								}
-							}
-							PRINT("%i", curmap);
-
-							for(int a = 0; a <= 999; a++) {
-								for(int b = 0; b <= 20; b++) {
-									for(int c = 0; c <= 14; c++) {
-										PRINT("%i", objmapf[a][b][c]);
+								for(int a = 0; a <= 4; a++) {
+									PRINT("%i", inventory[a]);
+								}
+								PRINT("%i", player.foundcrystal);
+								PRINT("%f", player.crystalcharge);
+								PRINT("%f", player.attackstrength);
+								PRINT("%i", player.spelldamage);
+								PRINT("%i", player.sworddamage);
+								PRINT("%i", player.masterkey);
+								PRINT("%i", player.exp);
+								PRINT("%i", player.nextlevel);
+								for(int a = 0; a <= 99; a++) {
+									for(int b = 0; b <= 9; b++) {
+										PRINT("%i", scriptflag[a][b]);
 									}
 								}
-							}
+								PRINT("%i", curmap);
 
-							for(int a = 0; a <= 200; a++) {
-								PRINT("%i", roomlocks[a]);
-							}
+								for(int a = 0; a <= 999; a++) {
+									for(int b = 0; b <= 20; b++) {
+										for(int c = 0; c <= 14; c++) {
+											PRINT("%i", objmapf[a][b][c]);
+										}
+									}
+								}
 
-							PRINT("%f", player.spellstrength);
+								for(int a = 0; a <= 200; a++) {
+									PRINT("%i", roomlocks[a]);
+								}
+
+								PRINT("%f", player.spellstrength);
+							}
 
 							fclose(fp);
 						}
