@@ -612,6 +612,83 @@ do {					\
 
 // CODE GOES HERE -------------------------------------------------------------
 
+void config_load(CONFIG *config)
+{
+	char line[128];
+	char arg[128];
+	FILE *fp;
+
+	fp = fopen(config_ini, "r");
+	if(fp) {
+		while(fgets(line, sizeof(line), fp) != NULL) {
+			sscanf(line, "%s", arg); // eliminate eol and eof by this
+
+			if(strcmp(arg, "SCR_WIDTH:") == 0) {
+				fgets(line, sizeof(line), fp);
+				sscanf(line, "%i", &config->scr_width);
+			} else if(strcmp(arg, "SCR_HEIGHT:") == 0) {
+				fgets(line, sizeof(line), fp);
+				sscanf(line, "%i", &config->scr_height);
+			} else if(strcmp(arg, "SCR_BITS:") == 0) {
+				fgets(line, sizeof(line), fp);
+				sscanf(line, "%i", &config->scr_bpp);
+			} else if(strcmp(arg, "HWACCEL:YES") == 0) {
+				config->hwaccel = SDL_HWACCEL;
+			} else if(strcmp(arg, "HWACCEL:NO") == 0) {
+				config->hwaccel = 0;
+			} else if(strcmp(arg, "HWSURFACE:YES") == 0) {
+				config->hwsurface = SDL_HWSURFACE;
+			} else if(strcmp(arg, "HWSURFACE:NO") == 0) {
+				config->hwsurface = 0;
+			} else if(strcmp(arg, "FULLSCREEN:YES") == 0) {
+				config->fullscreen = SDL_FULLSCREEN;
+			} else if(strcmp(arg, "FULLSCREEN:NO") == 0) {
+				config->fullscreen = 0;
+			} else if(strcmp(arg, "MUSIC:YES") == 0) {
+				config->music = 1;
+			} else if(strcmp(arg, "MUSIC:NO") == 0) {
+				config->music = 0;
+			} else if(strcmp(arg, "SNDEFFECTS:YES") == 0) {
+				config->effects = 1;
+			} else if(strcmp(arg, "SNDEFFECTS:NO") == 0) {
+				config->effects = 0;
+			} else if(strcmp(arg, "opmusicvol:") == 0) {
+				fgets(line, sizeof(line), fp);
+				sscanf(line, "%i", &config->musicvol);
+			} else if(strcmp(arg, "opeffectsvol:") == 0) {
+				fgets(line, sizeof(line), fp);
+				sscanf(line, "%i", &config->effectsvol);
+			}
+		}
+
+		fclose(fp);
+	}
+}
+
+void config_save(CONFIG *config)
+{
+	FILE *fp = fopen(config_ini, "w");
+
+	if(fp) {
+		PRINT("%s", "SCR_WIDTH:");
+		PRINT("%i", config->scr_width);
+		PRINT("%s", "SCR_HEIGHT:");
+		PRINT("%i", config->scr_height);
+		PRINT("%s", "SCR_BITS:");
+		PRINT("%i", config->scr_bpp);
+		PRINT("%s", config->hwaccel ? "HWACCEL:YES" : "HWACCEL:NO");
+		PRINT("%s", config->hwsurface ? "HWSURFACE:YES" : "HWSURFACE:NO");
+		PRINT("%s", config->fullscreen ? "FULLSCREEN:YES" : "FULLSCREEN:NO");
+		PRINT("%s", config->music ? "MUSIC:YES" : "MUSIC:NO");
+		PRINT("%s", config->effects ? "SNDEFFECTS:YES" : "SNDEFFECTS:NO");
+		PRINT("%s", "opmusicvol:");
+		PRINT("%i", config->musicvol);
+		PRINT("%s", "opeffectsvol:");
+		PRINT("%i", config->effectsvol);
+		fclose(fp);
+	}
+}
+
 // copypaste from hRnd_CRT()
 static float RND()
 {
@@ -1783,25 +1860,7 @@ void game_configmenu()
 					if(cursel == 10 && config.effects == 1) config.effects = 0;
 
 					if(cursel == 13) {
-						FILE *fp = fopen(config_ini, "w");
-
-						PRINT("%s", "SCR_WIDTH:");
-						PRINT("%i", config.scr_width);
-						PRINT("%s", "SCR_HEIGHT:");
-						PRINT("%i", config.scr_height);
-						PRINT("%s", "SCR_BITS:");
-						PRINT("%i", config.scr_bpp);
-						PRINT("%s", config.hwaccel ? "HWACCEL:YES" : "HWACCEL:NO");
-						PRINT("%s", config.hwsurface ? "HWSURFACE:YES" : "HWSURFACE:NO");
-						PRINT("%s", config.fullscreen ? "FULLSCREEN:YES" : "FULLSCREEN:NO");
-						PRINT("%s", config.music ? "MUSIC:YES" : "MUSIC:NO");
-						PRINT("%s", config.effects ? "SNDEFFECTS:YES" : "SNDEFFECTS:NO");
-						PRINT("%s", "opmusicvol:");
-						PRINT("%i", config.musicvol);
-						PRINT("%s", "opeffectsvol:");
-						PRINT("%i", config.effectsvol);
-						fclose(fp);
-
+						config_save(&config);
 						break;
 					}
 
@@ -8273,9 +8332,6 @@ void sys_initpaths()
 void sys_initialize()
 {
 	int result;
-	char line[128];
-	char arg[128];
-	FILE *fp;
 
 	sys_initpaths();
 
@@ -8295,41 +8351,7 @@ void sys_initialize()
 	config.musicvol = 127;
 	config.effectsvol = 127;
 
-	fp = fopen(config_ini, "r");
-	if(fp) {
-		while(fgets(line, sizeof(line), fp) != NULL) {
-			sscanf(line, "%s", arg); // eliminate eol and eof by this
-
-			if(strcmp(arg, "SCR_WIDTH:") == 0) {
-				fgets(line, sizeof(line), fp);
-				sscanf(line, "%i", &config.scr_width);
-			} else if(strcmp(arg, "SCR_HEIGHT:") == 0) {
-				fgets(line, sizeof(line), fp);
-				sscanf(line, "%i", &config.scr_height);
-			} else if(strcmp(arg, "SCR_BITS:") == 0) {
-				fgets(line, sizeof(line), fp);
-				sscanf(line, "%i", &config.scr_bpp);
-			} else if(strcmp(arg, "HWACCEL:YES") == 0) {
-				config.hwaccel = SDL_HWACCEL;
-			} else if(strcmp(arg, "HWSURFACE:YES") == 0) {
-				config.hwsurface = SDL_HWSURFACE;
-			} else if(strcmp(arg, "FULLSCREEN:YES") == 0) {
-				config.fullscreen = SDL_FULLSCREEN;
-			} else if(strcmp(arg, "MUSIC:YES") == 0) {
-				config.music = 1;
-			} else if(strcmp(arg, "SNDEFFECTS:YES") == 0) {
-				config.effects = 1;
-			} else if(strcmp(arg, "opmusicvol:") == 0) {
-				fgets(line, sizeof(line), fp);
-				sscanf(line, "%i", &config.musicvol);
-			} else if(strcmp(arg, "opeffectsvol:") == 0) {
-				fgets(line, sizeof(line), fp);
-				sscanf(line, "%i", &config.effectsvol);
-			}
-		}
-
-		fclose(fp);
-	}
+	config_load(&config);
 
 	printf("SCR_WIDTH: %i\n", config.scr_width);
 	printf("SCR_HEIGHT: %i\n", config.scr_height);
