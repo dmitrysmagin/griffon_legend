@@ -5335,82 +5335,85 @@ void game_saveloadnew()
 						fp = fopen(line, "r");
 						if(fp) {
 							INPUT("%i", &player.level);
-							INPUT("%i", &secstart);
-							INPUT("%s", line);
 
-							INPUT("%f", &player.px);
-							INPUT("%f", &player.py);
-							INPUT("%f", &player.opx);
-							INPUT("%f", &player.opy);
-							INPUT("%i", &player.walkdir);
-							INPUT("%f", &player.walkframe);
-							INPUT("%f", &player.walkspd);
-							INPUT("%f", &player.attackframe);
-							INPUT("%f", &player.attackspd);
-							INPUT("%i", &player.hp);
-							INPUT("%i", &player.maxhp);
-							INPUT("%f", &player.hpflash);
-							INPUT("%i", &player.level);
-							INPUT("%i", &player.sword);
-							INPUT("%i", &player.shield);
-							INPUT("%i", &player.armour);
-							for(int i = 0; i <= 5; i++) {
-								INPUT("%i", &player.foundspell[i]);
-								INPUT("%f", &player.spellcharge[i]);
-							}
-							for(int a = 0; a <= 4; a++) {
-								INPUT("%i", &inventory[a]);
-							}
+							if(player.level > 0 ){
+								INPUT("%i", &secstart);
+								INPUT("%s", line);
 
-							INPUT("%i", &player.foundcrystal);
-							INPUT("%f", &player.crystalcharge);
-							INPUT("%f", &player.attackstrength);
-							INPUT("%i", &player.spelldamage);
-							INPUT("%i", &player.sworddamage);
-							INPUT("%i", &player.masterkey);
-							INPUT("%i", &player.exp);
-							INPUT("%i", &player.nextlevel);
-							for(int a = 0; a <= 99; a++) {
-								for(int b = 0; b <= 9; b++) {
-									INPUT("%i", &scriptflag[a][b]);
+								INPUT("%f", &player.px);
+								INPUT("%f", &player.py);
+								INPUT("%f", &player.opx);
+								INPUT("%f", &player.opy);
+								INPUT("%i", &player.walkdir);
+								INPUT("%f", &player.walkframe);
+								INPUT("%f", &player.walkspd);
+								INPUT("%f", &player.attackframe);
+								INPUT("%f", &player.attackspd);
+								INPUT("%i", &player.hp);
+								INPUT("%i", &player.maxhp);
+								INPUT("%f", &player.hpflash);
+								INPUT("%i", &player.level);
+								INPUT("%i", &player.sword);
+								INPUT("%i", &player.shield);
+								INPUT("%i", &player.armour);
+								for(int i = 0; i <= 5; i++) {
+									INPUT("%i", &player.foundspell[i]);
+									INPUT("%f", &player.spellcharge[i]);
 								}
-							}
-							INPUT("%i", &curmap);
+								for(int a = 0; a <= 4; a++) {
+									INPUT("%i", &inventory[a]);
+								}
 
-							for(int a = 0; a <= 999; a++) {
-								for(int b = 0; b <= 20; b++) {
-									for(int c = 0; c <= 14; c++) {
-										INPUT("%i", &objmapf[a][b][c]);
+								INPUT("%i", &player.foundcrystal);
+								INPUT("%f", &player.crystalcharge);
+								INPUT("%f", &player.attackstrength);
+								INPUT("%i", &player.spelldamage);
+								INPUT("%i", &player.sworddamage);
+								INPUT("%i", &player.masterkey);
+								INPUT("%i", &player.exp);
+								INPUT("%i", &player.nextlevel);
+								for(int a = 0; a <= 99; a++) {
+									for(int b = 0; b <= 9; b++) {
+										INPUT("%i", &scriptflag[a][b]);
 									}
 								}
+								INPUT("%i", &curmap);
+
+								for(int a = 0; a <= 999; a++) {
+									for(int b = 0; b <= 20; b++) {
+										for(int c = 0; c <= 14; c++) {
+											INPUT("%i", &objmapf[a][b][c]);
+										}
+									}
+								}
+
+								for(int a = 0; a <= 200; a++) {
+									INPUT("%i", &roomlocks[a]);
+								}
+
+								INPUT("%f", &player.spellstrength);
+
+								player.walkspd = 1.1;
+								animspd = .5;
+								attacking = 0;
+								player.attackspd = 1.5;
+
+								pgardens = 0;
+								ptown = 0;
+								pboss = 0;
+								pacademy = 0;
+								pcitadel = 0;
+
+
+								fclose(fp);
+
+								Mix_HaltChannel(-1);
+
+								secsingame = 0;
+								saveslot = currow - 1;
+								game_loadmap(curmap);
+								game_playgame();
 							}
-
-							for(int a = 0; a <= 200; a++) {
-								INPUT("%i", &roomlocks[a]);
-							}
-
-							INPUT("%f", &player.spellstrength);
-
-							player.walkspd = 1.1;
-							animspd = .5;
-							attacking = 0;
-							player.attackspd = 1.5;
-
-							pgardens = 0;
-							ptown = 0;
-							pboss = 0;
-							pacademy = 0;
-							pcitadel = 0;
-
-
-							fclose(fp);
-
-							Mix_HaltChannel(-1);
-
-							secsingame = 0;
-							saveslot = currow - 1;
-							game_loadmap(curmap);
-							game_playgame();
 						}
 					}
 
