@@ -294,7 +294,7 @@ SDL_Surface *video, *videobuffer, *videobuffer2, *videobuffer3;
 SDL_Surface *titleimg, *titleimg2, *inventoryimg;
 SDL_Surface *logosimg, *theendimg;
 SDL_Event event;
-int SCR_WIDTH, SCR_HEIGHT, SCR_BITS, SCR_TOPX, SCR_TOPY;
+int SCR_TOPX, SCR_TOPY;
 
 SDL_Surface *mapbg, *clipbg, *clipbg2;
 unsigned int clipsurround[4][4];
@@ -325,8 +325,23 @@ SDL_Surface *mapimg[4];
 extern int invmap[4][7][13];
 extern char *story2[27];
 
-// options
-int opfullscreen, opmusic = 1, opeffects = 1, opmusicvol, opeffectsvol;
+// config options
+typedef struct {
+	int scr_width;
+	int scr_height;
+	int scr_bpp;
+	int fullscreen;
+	int hwaccel;
+	int hwsurface;
+	int music;
+	int musicvol;
+	int effects;
+	int effectsvol;
+} CONFIG;
+
+CONFIG config = {
+	320, 240, 16, 0, 0, 0, 1, 127, 1, 127
+};
 
 // paths for config.ini and player*.sav
 char config_ini[64] = "config.ini";
@@ -335,7 +350,7 @@ char player_sav[61] = "data/player%i.sav";
 SDL_Rect rc, rc2, rcSrc, rcDest, rcSrc2;
 
 
-int HWACCEL, HWSURFACE, maxlevel;
+int maxlevel;
 
 // inventory
 int inventoryalpha, inventory[6];
@@ -667,9 +682,9 @@ void game_attack()
 
 					objmapf[curmap][lx][ly - 1] = 1;
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					if(objectinfo[o][4] == 1) objmap[lx][ly - 1] = 3;
@@ -680,9 +695,9 @@ void game_attack()
 				}
 
 				if(oscript == 0 && inventory[0] == 9) {
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndchest], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					game_eventtext("Cannot Carry any more Flasks!");
@@ -701,9 +716,9 @@ void game_attack()
 					if(curmap == 62) scriptflag[8][0] = 2;
 					if(curmap == 81) scriptflag[13][0] = 2;
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					if(objectinfo[o][4] == 1) objmap[lx][ly - 1] = 3;
@@ -717,9 +732,9 @@ void game_attack()
 
 					game_addFloatIcon(7, lx * 16, (ly - 1) * 16);
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					if(objectinfo[o][4] == 1) objmap[lx][ly - 1] = 3;
@@ -736,9 +751,9 @@ void game_attack()
 
 					itemticks = ticks + 215;
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					if(objectinfo[o][4] == 1) objmap[lx][ly - 1] = 3;
@@ -755,9 +770,9 @@ void game_attack()
 
 					itemticks = ticks + 215;
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					if(objectinfo[o][4] == 1) objmap[lx][ly - 1] = 3;
@@ -775,9 +790,9 @@ void game_attack()
 							}
 						}
 
-						if(menabled == 1 && opeffects == 1) {
+						if(menabled == 1 && config.effects == 1) {
 							int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-							Mix_Volume(snd, opeffectsvol);
+							Mix_Volume(snd, config.effectsvol);
 						}
 
 						objmapf[curmap][lx][ly - 1] = 1;
@@ -787,9 +802,9 @@ void game_attack()
 						game_eventtext("Found Key");
 						game_addFloatIcon(16, lx * 16, (ly - 1) * 16);
 					} else {
-						if(menabled == 1 && opeffects == 1) {
+						if(menabled == 1 && config.effects == 1) {
 							int snd = Mix_PlayChannel(-1, sfx[sndchest], 0);
-							Mix_Volume(snd, opeffectsvol);
+							Mix_Volume(snd, config.effectsvol);
 						}
 
 						game_eventtext("Cannot Carry Any More Keys");
@@ -803,9 +818,9 @@ void game_attack()
 
 					objmapf[curmap][lx][ly - 1] = 1;
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					if(objectinfo[o][4] == 1) objmap[lx][ly - 1] = 3;
@@ -816,9 +831,9 @@ void game_attack()
 				}
 
 				if(oscript == 7 && inventory[1] == 9) {
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndchest], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					game_eventtext("Cannot Carry any more Mega Flasks!");
@@ -833,9 +848,9 @@ void game_attack()
 
 					objmapf[curmap][lx][ly - 1] = 1;
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					if(objectinfo[o][4] == 1) objmap[lx][ly - 1] = 3;
@@ -846,9 +861,9 @@ void game_attack()
 				}
 
 				if(oscript == 10 && inventory[1] == 9) {
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndchest], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					game_eventtext("Cannot Carry any more Mega Flasks!");
@@ -863,9 +878,9 @@ void game_attack()
 
 					objmapf[curmap][lx][ly - 1] = 1;
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					if(objectinfo[o][4] == 1) objmap[lx][ly - 1] = 3;
@@ -876,9 +891,9 @@ void game_attack()
 				}
 
 				if(oscript == 11 && inventory[2] == 9) {
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndchest], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					game_eventtext("Cannot Carry any more Lightning Bombs!");
@@ -891,9 +906,9 @@ void game_attack()
 
 					game_addFloatIcon(5, lx * 16, (ly - 1) * 16);
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					if(objectinfo[o][4] == 1) objmap[lx][ly - 1] = 3;
@@ -907,31 +922,31 @@ void game_attack()
 					if(curmap == 58 && scriptflag[60][0] == 0) {
 						scriptflag[60][0] = 1;
 
-						if(menabled == 1 && opeffects == 1) {
+						if(menabled == 1 && config.effects == 1) {
 							int snd = Mix_PlayChannel(-1, sfx[sndlever], 0);
-							Mix_Volume(snd, opeffectsvol);
+							Mix_Volume(snd, config.effectsvol);
 						}
 
 					} else if(curmap == 58 && scriptflag[60][0] > 0) {
-						if(menabled == 1 && opeffects == 1) {
+						if(menabled == 1 && config.effects == 1) {
 							int snd = Mix_PlayChannel(-1, sfx[snddoor], 0);
-							Mix_Volume(snd, opeffectsvol);
+							Mix_Volume(snd, config.effectsvol);
 						}
 
 						game_eventtext("It's stuck!");
 					}
 
 					if(curmap == 54 && scriptflag[60][0] == 1) {
-						if(menabled == 1 && opeffects == 1) {
+						if(menabled == 1 && config.effects == 1) {
 							int snd = Mix_PlayChannel(-1, sfx[sndlever], 0);
-							Mix_Volume(snd, opeffectsvol);
+							Mix_Volume(snd, config.effectsvol);
 						}
 
 						scriptflag[60][0] = 2;
 					} else if(curmap == 54 && scriptflag[60][0] > 1) {
-						if(menabled == 1 && opeffects == 1) {
+						if(menabled == 1 && config.effects == 1) {
 							int snd = Mix_PlayChannel(-1, sfx[snddoor], 0);
-							Mix_Volume(snd, opeffectsvol);
+							Mix_Volume(snd, config.effectsvol);
 						}
 
 						game_eventtext("It's stuck!");
@@ -946,9 +961,9 @@ void game_attack()
 
 					itemticks = ticks + 215;
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					if(objectinfo[o][4] == 1) objmap[lx][ly - 1] = 3;
@@ -962,9 +977,9 @@ void game_attack()
 					game_addFloatIcon(19, lx * 16, (ly - 1) * 16);
 					itemticks = ticks + 215;
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					if(objectinfo[o][4] == 1) objmap[lx][ly - 1] = 3;
@@ -978,9 +993,9 @@ void game_attack()
 					game_addFloatIcon(20, lx * 16, (ly - 1) * 16);
 					itemticks = ticks + 215;
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					if(objectinfo[o][4] == 1) objmap[lx][ly - 1] = 3;
@@ -1073,16 +1088,16 @@ void game_castspell(int spellnum, float homex, float homey, float enemyx, float 
 				spellinfo[i].nfballs = nballs;
 			}
 
-			if(menabled == 1 && opeffects == 1) {
+			if(menabled == 1 && config.effects == 1) {
 				if(spellnum == 1) {
 					int snd = Mix_PlayChannel(-1, sfx[sndthrow], 0);
-					Mix_Volume(snd, opeffectsvol);
+					Mix_Volume(snd, config.effectsvol);
 				} else if(spellnum == 5) {
 					int snd = Mix_PlayChannel(-1, sfx[sndcrystal], 0);
-					Mix_Volume(snd, opeffectsvol);
+					Mix_Volume(snd, config.effectsvol);
 				} else if(spellnum == 8 || spellnum == 9) {
 					int snd = Mix_PlayChannel(-1, sfx[sndlightning], 0);
-					Mix_Volume(snd, opeffectsvol);
+					Mix_Volume(snd, config.effectsvol);
 				}
 			}
 
@@ -1125,9 +1140,9 @@ void game_checkhit()
 					}
 
 					if(hit == 1) {
-						if(menabled == 1 && opeffects == 1) {
+						if(menabled == 1 && config.effects == 1) {
 							int snd = Mix_PlayChannel(-1, sfx[sndswordhit], 0);
-							Mix_Volume(snd, opeffectsvol);
+							Mix_Volume(snd, config.effectsvol);
 						}
 
 						game_damagenpc(i, damage, 0);
@@ -1174,15 +1189,15 @@ void game_checkinputs()
 		case SDLK_RETURN:
 			if(keys[SDLK_LALT] || keys[SDLK_RALT]) {
 				if(fullscreen & SDL_FULLSCREEN) {
-					fullscreen = HWACCEL | HWSURFACE;
+					fullscreen = config.hwaccel | config.hwsurface;
 				} else {
-					fullscreen = SDL_FULLSCREEN | HWACCEL | HWSURFACE;
+					fullscreen = SDL_FULLSCREEN | config.hwaccel | config.hwsurface;
 				}
 
-				opfullscreen = fullscreen & SDL_FULLSCREEN;
+				config.fullscreen = fullscreen & SDL_FULLSCREEN;
 
-				video = SDL_SetVideoMode(SCR_WIDTH, SCR_HEIGHT, SCR_BITS, fullscreen);
-				SDL_UpdateRect(video, 0, 0, SCR_WIDTH, SCR_HEIGHT);
+				video = SDL_SetVideoMode(config.scr_width, config.scr_height, config.scr_bpp, fullscreen);
+				SDL_UpdateRect(video, 0, 0, config.scr_width, config.scr_height);
 			}
 			break;
 
@@ -1206,9 +1221,9 @@ void game_checkinputs()
 
 					inventory[0] = inventory[0] - 1;
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					itemselon = 0;
@@ -1231,9 +1246,9 @@ void game_checkinputs()
 
 					inventory[1] = inventory[1] - 1;
 
-					if(menabled == 1 && opeffects == 1) {
+					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-						Mix_Volume(snd, opeffectsvol);
+						Mix_Volume(snd, config.effectsvol);
 					}
 
 					itemselon = 0;
@@ -1540,7 +1555,7 @@ void game_configmenu()
 			static char line[24];
 
 			if(i == 15 || i == 17) {
-				int vol = (i == 15 ? opmusicvol : opeffectsvol) * 9 / 255;
+				int vol = (i == 15 ? config.musicvol : config.effectsvol) * 9 / 255;
 				if(vol < 0) vol = 0;
 				if(vol > 9) vol = 9;
 
@@ -1550,17 +1565,17 @@ void game_configmenu()
 			}
 
 			int cl = 3;
-			if(i == 0 && SCR_WIDTH == 320) cl = 0;
-			if(i == 1 && SCR_WIDTH == 640) cl = 0;
-			if(i == 2 && SCR_BITS == 16) cl = 0;
-			if(i == 3 && SCR_BITS == 24) cl = 0;
-			if(i == 4 && SCR_BITS == 32) cl = 0;
-			if(i == 6 && opfullscreen != 0) cl = 0;
-			if(i == 7 && opfullscreen == 0) cl = 0;
-			if(i == 9 && opmusic == 1) cl = 0;
-			if(i == 10 && opmusic == 0) cl = 0;
-			if(i == 12 && opeffects == 1) cl = 0;
-			if(i == 13 && opeffects == 0) cl = 0;
+			if(i == 0 && config.scr_width == 320) cl = 0;
+			if(i == 1 && config.scr_width == 640) cl = 0;
+			if(i == 2 && config.scr_bpp == 16) cl = 0;
+			if(i == 3 && config.scr_bpp == 24) cl = 0;
+			if(i == 4 && config.scr_bpp == 32) cl = 0;
+			if(i == 6 && config.fullscreen != 0) cl = 0;
+			if(i == 7 && config.fullscreen == 0) cl = 0;
+			if(i == 9 && config.music == 1) cl = 0;
+			if(i == 10 && config.music == 0) cl = 0;
+			if(i == 12 && config.effects == 1) cl = 0;
+			if(i == 13 && config.effects == 0) cl = 0;
 
 			if(i > 18) cl = 0;
 
@@ -1628,43 +1643,43 @@ void game_configmenu()
 				if(cursel == 11 || cursel == 12) {
 					if(keys[SDLK_LEFT]) {
 						if(cursel == 11) {
-							opmusicvol = opmusicvol - 25;
-							if(opmusicvol < 0) opmusicvol = 0;
+							config.musicvol = config.musicvol - 25;
+							if(config.musicvol < 0) config.musicvol = 0;
 
-							Mix_Volume(musicchannel, opmusicvol);
-							Mix_Volume(menuchannel, opmusicvol);
+							Mix_Volume(musicchannel, config.musicvol);
+							Mix_Volume(menuchannel, config.musicvol);
 						} else if(cursel == 12) {
-							opeffectsvol = opeffectsvol - 25;
-							if(opeffectsvol < 0) opeffectsvol = 0;
+							config.effectsvol = config.effectsvol - 25;
+							if(config.effectsvol < 0) config.effectsvol = 0;
 
-							Mix_Volume(-1, opeffectsvol);
-							Mix_Volume(musicchannel, opmusicvol);
-							Mix_Volume(menuchannel, opmusicvol);
+							Mix_Volume(-1, config.effectsvol);
+							Mix_Volume(musicchannel, config.musicvol);
+							Mix_Volume(menuchannel, config.musicvol);
 
-							if(menabled == 1 && opeffects == 1) {
+							if(menabled == 1 && config.effects == 1) {
 								int snd = Mix_PlayChannel(-1, sfx[snddoor], 0);
-								Mix_Volume(snd, opeffectsvol);
+								Mix_Volume(snd, config.effectsvol);
 							}
 						}
 					}
 					if(keys[SDLK_RIGHT]) {
 						if(cursel == 11) {
-							opmusicvol = opmusicvol + 25;
-							if(opmusicvol > 255) opmusicvol = 255;
+							config.musicvol = config.musicvol + 25;
+							if(config.musicvol > 255) config.musicvol = 255;
 
-							Mix_Volume(musicchannel, opmusicvol);
-							Mix_Volume(menuchannel, opmusicvol);
+							Mix_Volume(musicchannel, config.musicvol);
+							Mix_Volume(menuchannel, config.musicvol);
 						} else if(cursel == 12) {
-							opeffectsvol = opeffectsvol + 25;
-							if(opeffectsvol > 255) opeffectsvol = 255;
+							config.effectsvol = config.effectsvol + 25;
+							if(config.effectsvol > 255) config.effectsvol = 255;
 
-							Mix_Volume(-1, opeffectsvol);
-							Mix_Volume(musicchannel, opmusicvol);
-							Mix_Volume(menuchannel, opmusicvol);
+							Mix_Volume(-1, config.effectsvol);
+							Mix_Volume(musicchannel, config.musicvol);
+							Mix_Volume(menuchannel, config.musicvol);
 
-							if(menabled == 1 && opeffects == 1) {
+							if(menabled == 1 && config.effects == 1) {
 								int snd = Mix_PlayChannel(-1, sfx[snddoor], 0);
-								Mix_Volume(snd, opeffectsvol);
+								Mix_Volume(snd, config.effectsvol);
 							}
 						}
 					}
@@ -1675,116 +1690,116 @@ void game_configmenu()
 
 				if(keys[SDLK_SPACE] || keys[SDLK_RETURN]) {
 					if(cursel == 0) {
-						fullscreen = opfullscreen | HWACCEL | HWSURFACE;
+						fullscreen = config.fullscreen | config.hwaccel | config.hwsurface;
 
-						video = SDL_SetVideoMode(320, 240, SCR_BITS, fullscreen);
+						video = SDL_SetVideoMode(320, 240, config.scr_bpp, fullscreen);
 						if(video == 0) {
-							video = SDL_SetVideoMode(SCR_WIDTH, SCR_HEIGHT, SCR_BITS, fullscreen);
+							video = SDL_SetVideoMode(config.scr_width, config.scr_height, config.scr_bpp, fullscreen);
 						} else {
-							SCR_WIDTH = 320;
-							SCR_HEIGHT = 240;
+							config.scr_width = 320;
+							config.scr_height = 240;
 							SCR_TOPX = 0;
 							SCR_TOPY = 0;
 						}
 
-						SDL_UpdateRect(video, 0, 0, SCR_WIDTH, SCR_HEIGHT);
+						SDL_UpdateRect(video, 0, 0, config.scr_width, config.scr_height);
 					}
 					if(cursel == 1) {
-						fullscreen = opfullscreen | HWACCEL | HWSURFACE;
+						fullscreen = config.fullscreen | config.hwaccel | config.hwsurface;
 
-						video = SDL_SetVideoMode(640, 480, SCR_BITS, fullscreen);
+						video = SDL_SetVideoMode(640, 480, config.scr_bpp, fullscreen);
 						if(video == 0) {
-							video = SDL_SetVideoMode(SCR_WIDTH, SCR_HEIGHT, SCR_BITS, fullscreen);
+							video = SDL_SetVideoMode(config.scr_width, config.scr_height, config.scr_bpp, fullscreen);
 						} else {
-							SCR_WIDTH = 640;
-							SCR_HEIGHT = 480;
+							config.scr_width = 640;
+							config.scr_height = 480;
 							SCR_TOPX = 160;
 							SCR_TOPY = 120;
 						}
 
-						SDL_UpdateRect(video, 0, 0, SCR_WIDTH, SCR_HEIGHT);
+						SDL_UpdateRect(video, 0, 0, config.scr_width, config.scr_height);
 					}
 					if(cursel == 2 || cursel == 3 || cursel == 4) {
-						fullscreen = opfullscreen | HWACCEL | HWSURFACE;
+						fullscreen = config.fullscreen | config.hwaccel | config.hwsurface;
 
 						int b = 16;
 						if(cursel == 3) b = 24;
 						if(cursel == 4) b = 32;
-						video = SDL_SetVideoMode(SCR_WIDTH, SCR_HEIGHT, b, fullscreen);
+						video = SDL_SetVideoMode(config.scr_width, config.scr_height, b, fullscreen);
 						if(video == 0) {
-							video = SDL_SetVideoMode(SCR_WIDTH, SCR_HEIGHT, SCR_BITS, fullscreen);
+							video = SDL_SetVideoMode(config.scr_width, config.scr_height, config.scr_bpp, fullscreen);
 						} else {
-							SCR_BITS = b;
+							config.scr_bpp = b;
 						}
 
-						SDL_UpdateRect(video, 0, 0, SCR_WIDTH, SCR_HEIGHT);
+						SDL_UpdateRect(video, 0, 0, config.scr_width, config.scr_height);
 					}
 					if(cursel == 5) {
-						ofullscreen = opfullscreen | HWACCEL | HWSURFACE;
-						fullscreen = SDL_FULLSCREEN | HWACCEL | HWSURFACE;
+						ofullscreen = config.fullscreen | config.hwaccel | config.hwsurface;
+						fullscreen = SDL_FULLSCREEN | config.hwaccel | config.hwsurface;
 
-						video = SDL_SetVideoMode(SCR_WIDTH, SCR_HEIGHT, SCR_BITS, fullscreen);
+						video = SDL_SetVideoMode(config.scr_width, config.scr_height, config.scr_bpp, fullscreen);
 						if(video == 0) {
-							video = SDL_SetVideoMode(SCR_WIDTH, SCR_HEIGHT, SCR_BITS, ofullscreen);
+							video = SDL_SetVideoMode(config.scr_width, config.scr_height, config.scr_bpp, ofullscreen);
 						} else {
-							opfullscreen = SDL_FULLSCREEN;
+							config.fullscreen = SDL_FULLSCREEN;
 						}
 
-						SDL_UpdateRect(video, 0, 0, SCR_WIDTH, SCR_HEIGHT);
+						SDL_UpdateRect(video, 0, 0, config.scr_width, config.scr_height);
 					}
 					if(cursel == 6) {
-						ofullscreen = opfullscreen | HWACCEL | HWSURFACE;
-						fullscreen = 0 | HWACCEL | HWSURFACE;
+						ofullscreen = config.fullscreen | config.hwaccel | config.hwsurface;
+						fullscreen = 0 | config.hwaccel | config.hwsurface;
 
-						video = SDL_SetVideoMode(SCR_WIDTH, SCR_HEIGHT, SCR_BITS, fullscreen);
+						video = SDL_SetVideoMode(config.scr_width, config.scr_height, config.scr_bpp, fullscreen);
 						if(video == 0) {
-							video = SDL_SetVideoMode(SCR_WIDTH, SCR_HEIGHT, SCR_BITS, ofullscreen);
+							video = SDL_SetVideoMode(config.scr_width, config.scr_height, config.scr_bpp, ofullscreen);
 						} else {
-							opfullscreen = 0;
+							config.fullscreen = 0;
 						}
 
-						SDL_UpdateRect(video, 0, 0, SCR_WIDTH, SCR_HEIGHT);
+						SDL_UpdateRect(video, 0, 0, config.scr_width, config.scr_height);
 					}
-					if(cursel == 7 && opmusic == 0) {
-						opmusic = 1;
+					if(cursel == 7 && config.music == 0) {
+						config.music = 1;
 						if(menabled == 1) {
 							menuchannel = Mix_PlayChannel(-1, mmenu, -1);
-							Mix_Volume(menuchannel, opmusicvol);
+							Mix_Volume(menuchannel, config.musicvol);
 						}
 					}
-					if(cursel == 8 && opmusic == 1) {
-						opmusic = 0;
+					if(cursel == 8 && config.music == 1) {
+						config.music = 0;
 						Mix_HaltChannel(musicchannel);
 						Mix_HaltChannel(menuchannel);
 					}
-					if(cursel == 9 && opeffects == 0) {
-						opeffects = 1;
+					if(cursel == 9 && config.effects == 0) {
+						config.effects = 1;
 						if(menabled == 1) {
 							int snd = Mix_PlayChannel(-1, sfx[snddoor], 0);
-							Mix_Volume(snd, opeffectsvol);
+							Mix_Volume(snd, config.effectsvol);
 						}
 					}
 
-					if(cursel == 10 && opeffects == 1) opeffects = 0;
+					if(cursel == 10 && config.effects == 1) config.effects = 0;
 
 					if(cursel == 13) {
 						FILE *fp = fopen(config_ini, "w");
 
 						PRINT("%s", "SCR_WIDTH:");
-						PRINT("%i", SCR_WIDTH);
+						PRINT("%i", config.scr_width);
 						PRINT("%s", "SCR_HEIGHT:");
-						PRINT("%i", SCR_HEIGHT);
+						PRINT("%i", config.scr_height);
 						PRINT("%s", "SCR_BITS:");
-						PRINT("%i", SCR_BITS);
-						PRINT("%s", HWACCEL ? "HWACCEL:YES" : "HWACCEL:NO");
-						PRINT("%s", HWSURFACE ? "HWSURFACE:YES" : "HWSURFACE:NO");
-						PRINT("%s", opfullscreen ? "FULLSCREEN:YES" : "FULLSCREEN:NO");
-						PRINT("%s", opmusic ? "MUSIC:YES" : "MUSIC:NO");
-						PRINT("%s", opeffects ? "SNDEFFECTS:YES" : "SNDEFFECTS:NO");
+						PRINT("%i", config.scr_bpp);
+						PRINT("%s", config.hwaccel ? "HWACCEL:YES" : "HWACCEL:NO");
+						PRINT("%s", config.hwsurface ? "HWSURFACE:YES" : "HWSURFACE:NO");
+						PRINT("%s", config.fullscreen ? "FULLSCREEN:YES" : "FULLSCREEN:NO");
+						PRINT("%s", config.music ? "MUSIC:YES" : "MUSIC:NO");
+						PRINT("%s", config.effects ? "SNDEFFECTS:YES" : "SNDEFFECTS:NO");
 						PRINT("%s", "opmusicvol:");
-						PRINT("%i", opmusicvol);
+						PRINT("%i", config.musicvol);
 						PRINT("%s", "opeffectsvol:");
-						PRINT("%i", opeffectsvol);
+						PRINT("%i", config.effectsvol);
 						fclose(fp);
 
 						break;
@@ -3163,9 +3178,9 @@ void game_drawnpcs(int mode)
 
 								if(player.hp > 0) {
 									game_damageplayer(damage);
-									if(menabled == 1 && opeffects == 1) {
+									if(menabled == 1 && config.effects == 1) {
 										int snd = Mix_PlayChannel(-1, sfx[sndfire], 0);
-										Mix_Volume(snd, opeffectsvol);
+										Mix_Volume(snd, config.effectsvol);
 									}
 								}
 
@@ -3189,9 +3204,9 @@ void game_drawnpcs(int mode)
 
 								if(player.hp > 0) {
 									game_damageplayer(damage);
-									if(menabled == 1 && opeffects == 1) {
+									if(menabled == 1 && config.effects == 1) {
 										int snd = Mix_PlayChannel(-1, sfx[sndfire], 0);
-										Mix_Volume(snd, opeffectsvol);
+										Mix_Volume(snd, config.effectsvol);
 									}
 								}
 							}
@@ -3511,7 +3526,7 @@ void game_endofgame()
 
 	float spd = 0.2;
 
-	if(menabled == 1 && opmusic == 1) {
+	if(menabled == 1 && config.music == 1) {
 		Mix_HaltChannel(-1);
 		musicchannel = Mix_PlayChannel(-1, mendofgame, -1);
 		Mix_Volume(musicchannel, 0);
@@ -3529,10 +3544,10 @@ void game_endofgame()
 
 	do {
 		ld = ld + 4 * fpsr;
-		if(ld > opmusicvol) ld = opmusicvol;
+		if(ld > config.musicvol) ld = config.musicvol;
 		if(menabled == 1 && ldstop == 0) {
 			Mix_Volume(musicchannel, (int)ld);
-			if((int)ld == opmusicvol) ldstop = 1;
+			if((int)ld == config.musicvol) ldstop = 1;
 		}
 
 		ya = 0;
@@ -4008,9 +4023,9 @@ void game_handlewalking()
 
 			objmapf[curmap][lx][ly] = 1;
 
-			if(menabled == 1 && opeffects == 1) {
+			if(menabled == 1 && config.effects == 1) {
 				int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-				Mix_Volume(snd, opeffectsvol);
+				Mix_Volume(snd, config.effectsvol);
 			}
 		}
 
@@ -4023,9 +4038,9 @@ void game_handlewalking()
 
 			objmapf[curmap][lx][ly] = 1;
 
-			if(menabled == 1 && opeffects == 1) {
+			if(menabled == 1 && config.effects == 1) {
 				int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-				Mix_Volume(snd, opeffectsvol);
+				Mix_Volume(snd, config.effectsvol);
 			}
 		}
 
@@ -4039,9 +4054,9 @@ void game_handlewalking()
 			objmapf[curmap][lx][ly] = 1;
 			if(curmap == 41) scriptflag[9][1] = 1;
 
-			if(menabled == 1 && opeffects == 1) {
+			if(menabled == 1 && config.effects == 1) {
 				int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-				Mix_Volume(snd, opeffectsvol);
+				Mix_Volume(snd, config.effectsvol);
 			}
 
 		}
@@ -4055,9 +4070,9 @@ void game_handlewalking()
 
 			objmapf[curmap][lx][ly] = 1;
 
-			if(menabled == 1 && opeffects == 1) {
+			if(menabled == 1 && config.effects == 1) {
 				int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-				Mix_Volume(snd, opeffectsvol);
+				Mix_Volume(snd, config.effectsvol);
 			}
 
 		}
@@ -4870,7 +4885,7 @@ void game_newgame()
 	fpsr = 0.0;
 	int y = 140;
 
-	if(menabled == 1 && opmusic == 1) {
+	if(menabled == 1 && config.music == 1) {
 		Mix_HaltChannel(-1);
 		musicchannel = Mix_PlayChannel(-1, mendofgame, -1);
 		Mix_Volume(musicchannel, 0);
@@ -4883,10 +4898,10 @@ void game_newgame()
 
 	do {
 		ld += 4 * fpsr;
-		if((int)ld > opmusicvol) ld = opmusicvol;
+		if((int)ld > config.musicvol) ld = config.musicvol;
 		if(menabled == 1 && ldstop == 0) {
 			Mix_Volume(musicchannel, (int)ld);
-			if((int)ld == opmusicvol) ldstop = 1;
+			if((int)ld == config.musicvol) ldstop = 1;
 		}
 
  		rc.x = -xofs;
@@ -5104,9 +5119,9 @@ void game_processtrigger(int trignum)
 			if(player.py < 0) player.py = 0;
 
 			if(tmap > 0) {
-				if(menabled == 1 && opeffects == 1) {
+				if(menabled == 1 && config.effects == 1) {
 					int snd = Mix_PlayChannel(-1, sfx[snddoor], 0);
-					Mix_Volume(snd, opeffectsvol);
+					Mix_Volume(snd, config.effectsvol);
 				}
 
 				game_loadmap(tmap);
@@ -5849,12 +5864,12 @@ void game_title(int mode)
 
 	ticks1 = ticks;
 
-	if(menabled == 1 && opmusic == 1) {
+	if(menabled == 1 && config.music == 1) {
 		Mix_Volume(musicchannel, 0);
 		Mix_Pause(musicchannel);
 
 		menuchannel = Mix_PlayChannel(-1, mmenu, -1);
-		Mix_Volume(menuchannel, opmusicvol);
+		Mix_Volume(menuchannel, config.musicvol);
 		pmenu = 1;
 	}
 
@@ -5864,10 +5879,10 @@ void game_title(int mode)
 	do {
 
 		ld += 4.0 * fpsr;
-		if(ld > opmusicvol) ld = opmusicvol;
+		if(ld > config.musicvol) ld = config.musicvol;
 		if(menabled == 1 && ldstop == 0) {
 			Mix_Volume(menuchannel, (int)ld);
-			if((int)ld == opmusicvol) ldstop = 1;
+			if((int)ld == config.musicvol) ldstop = 1;
 		}
 
 		rc.x = -xofs;
@@ -5977,10 +5992,10 @@ void game_title(int mode)
 
 	itemticks = ticks + 210;
 
-	if(menabled == 1 && opmusic == 1) {
+	if(menabled == 1 && config.music == 1) {
 		Mix_HaltChannel(menuchannel);
 		Mix_Resume(musicchannel);
-		Mix_Volume(musicchannel, opmusicvol);
+		Mix_Volume(musicchannel, config.musicvol);
 		pmenu = 0;
 	}
 }
@@ -6042,7 +6057,7 @@ void game_updmusic()
 {
 	Mix_Chunk *iplaysound = NULL;
 
-	if(menabled == 1 && opmusic == 1) {
+	if(menabled == 1 && config.music == 1) {
 
 		// if(curmap > 5 && curmap < 42) iplaysound = macademy;
 		// if(curmap > 47) iplaysound = mgardens;
@@ -6065,7 +6080,7 @@ void game_updmusic()
 			if(iplaysound == mgardens) pgardens = 1;
 
 			musicchannel = Mix_PlayChannel(-1, iplaysound, -1);
-			Mix_Volume(musicchannel, opmusicvol);
+			Mix_Volume(musicchannel, config.musicvol);
 		} else {
 			if(!Mix_Playing(musicchannel)) {
 				loopseta = loopseta + 1;
@@ -6079,7 +6094,7 @@ void game_updmusic()
 					if(pgardens == 1 && loopseta == 3) musicchannel = Mix_PlayChannel(-1, mgardens4, 0);
 				}
 
-				Mix_Volume(musicchannel, opmusicvol);
+				Mix_Volume(musicchannel, config.musicvol);
 			}
 		}
 	}
@@ -6456,9 +6471,9 @@ void game_updnpcs()
 						if(abs(xdif) < 20 && abs(ydif) < 20) {
 							npcinfo[i].attackattempt = ticks + 100;
 							if((int)(RND() * 2) == 0) {
-								if(menabled == 1 && opeffects == 1) {
+								if(menabled == 1 && config.effects == 1) {
 									int snd = Mix_PlayChannel(-1, sfx[sndenemyhit], 0);
-									Mix_Volume(snd, opeffectsvol);
+									Mix_Volume(snd, config.effectsvol);
 								}
 
 								npcinfo[i].attacking = 1;
@@ -6481,9 +6496,9 @@ void game_updnpcs()
 								float dist = sqrt(xdif * xdif + ydif * ydif);
 
 								if((dist) < 24) {
-									if(menabled == 1 && opeffects == 1) {
+									if(menabled == 1 && config.effects == 1) {
 										int snd = Mix_PlayChannel(-1, sfx[sndbite], 0);
-										Mix_Volume(snd, opeffectsvol);
+										Mix_Volume(snd, config.effectsvol);
 									}
 
 									npcinfo[i].attacking = 1;
@@ -6585,9 +6600,9 @@ void game_updnpcs()
 									float dist = sqrt(xdif * xdif + ydif * ydif);
 
 									if((dist) < 36) {
-										if(menabled == 1 && opeffects == 1) {
+										if(menabled == 1 && config.effects == 1) {
 											int snd = Mix_PlayChannel(-1, sfx[sndbite], 0);
-											Mix_Volume(snd, opeffectsvol);
+											Mix_Volume(snd, config.effectsvol);
 										}
 
 										npcinfo[i].attacking = 1;
@@ -6759,9 +6774,9 @@ void game_updnpcs()
 								float dist = sqrt(xdif * xdif + ydif * ydif);
 
 								if((dist) < 24) {
-									if(menabled == 1 && opeffects == 1) {
+									if(menabled == 1 && config.effects == 1) {
 										int snd = Mix_PlayChannel(-1, sfx[sndbite], 0);
-										Mix_Volume(snd, opeffectsvol);
+										Mix_Volume(snd, config.effectsvol);
 									}
 
 									npcinfo[i].attacking = 1;
@@ -6832,9 +6847,9 @@ void game_updnpcs()
 						if(abs(xdif) < 32 && abs(ydif) < 32) {
 							npcinfo[i].attackattempt = ticks + 100;
 							if((int)(RND() * 2) == 0) {
-								if(menabled == 1 && opeffects == 1) {
+								if(menabled == 1 && config.effects == 1) {
 									int snd = Mix_PlayChannel(-1, sfx[sndenemyhit], 0);
-									Mix_Volume(snd, opeffectsvol);
+									Mix_Volume(snd, config.effectsvol);
 								}
 
 								npcinfo[i].attacking = 1;
@@ -6857,9 +6872,9 @@ void game_updnpcs()
 						if(abs(xdif) < 38 && abs(ydif) < 38) {
 							npcinfo[i].attackattempt = ticks + 100;
 							if((int)(RND() * 2) == 0) {
-								if(menabled == 1 && opeffects == 1) {
+								if(menabled == 1 && config.effects == 1) {
 									int snd = Mix_PlayChannel(-1, sfx[sndice], 0);
-									Mix_Volume(snd, opeffectsvol);
+									Mix_Volume(snd, config.effectsvol);
 								}
 								npcinfo[i].attacking = 1;
 								npcinfo[i].attackframe = 0;
@@ -7226,9 +7241,9 @@ void game_updspells()
 
 										if(npcinfo[e].hp > 0 && npcinfo[e].pause < ticks) {
 											game_damagenpc(e, damage, 1);
-											if(menabled == 1 && opeffects == 1) {
+											if(menabled == 1 && config.effects == 1) {
 												int snd = Mix_PlayChannel(-1, sfx[sndice], 0);
-												Mix_Volume(snd, opeffectsvol);
+												Mix_Volume(snd, config.effectsvol);
 											}
 										}
 									}
@@ -7254,9 +7269,9 @@ void game_updspells()
 
 										game_addFloatIcon(99, postinfo[e][0], postinfo[e][1]);
 
-										if(menabled == 1 && opeffects == 1) {
+										if(menabled == 1 && config.effects == 1) {
 											int snd = Mix_PlayChannel(-1, sfx[sndice], 0);
-											Mix_Volume(snd, opeffectsvol);
+											Mix_Volume(snd, config.effectsvol);
 										}
 									}
 								}
@@ -7306,9 +7321,9 @@ void game_updspells()
 
 							if(npcinfo[e].hp > 0 && npcinfo[e].pause < ticks) {
 								game_damagenpc(e, damage, 1);
-								if(menabled == 1 && opeffects == 1) {
+								if(menabled == 1 && config.effects == 1) {
 									int snd = Mix_PlayChannel(-1, sfx[sndmetalhit], 0);
-									Mix_Volume(snd, opeffectsvol);
+									Mix_Volume(snd, config.effectsvol);
 								}
 							}
 						}
@@ -7350,9 +7365,9 @@ void game_updspells()
 
 						if(player.hp > 0) {
 							game_damageplayer(damage);
-							if(menabled == 1 && opeffects == 1) {
+							if(menabled == 1 && config.effects == 1) {
 								int snd = Mix_PlayChannel(-1, sfx[sndmetalhit], 0);
-								Mix_Volume(snd, opeffectsvol);
+								Mix_Volume(snd, config.effectsvol);
 							}
 						}
 					}
@@ -7378,9 +7393,9 @@ void game_updspells()
 
 							game_addFloatIcon(99, postinfo[e][0], postinfo[e][1]);
 
-							if(menabled == 1 && opeffects == 1) {
+							if(menabled == 1 && config.effects == 1) {
 								int snd = Mix_PlayChannel(-1, sfx[sndmetalhit], 0);
-								Mix_Volume(snd, opeffectsvol);
+								Mix_Volume(snd, config.effectsvol);
 							}
 						}
 					}
@@ -7429,9 +7444,9 @@ void game_updspells()
 
 											if(npcinfo[e].hp > 0 && npcinfo[e].pause < ticks) {
 												game_damagenpc(e, damage, 1);
-												if(menabled == 1 && opeffects == 1) {
+												if(menabled == 1 && config.effects == 1) {
 													int snd = Mix_PlayChannel(-1, sfx[sndrocks], 0);
-													Mix_Volume(snd, opeffectsvol);
+													Mix_Volume(snd, config.effectsvol);
 												}
 											}
 										}
@@ -7458,9 +7473,9 @@ void game_updspells()
 
 											game_addFloatIcon(99, postinfo[e][0], postinfo[e][1]);
 
-											if(menabled == 1 && opeffects == 1) {
+											if(menabled == 1 && config.effects == 1) {
 												int snd = Mix_PlayChannel(-1, sfx[sndrocks], 0);
-												Mix_Volume(snd, opeffectsvol);
+												Mix_Volume(snd, config.effectsvol);
 											}
 										}
 									}
@@ -7648,9 +7663,9 @@ void game_updspells()
 
 								if(player.hp > 0) game_damageplayer(damage);
 
-								if(menabled == 1 && opeffects == 1) {
+								if(menabled == 1 && config.effects == 1) {
 									 int snd = Mix_PlayChannel(-1, sfx[sndfire], 0);
-									 Mix_Volume(snd, opeffectsvol);
+									 Mix_Volume(snd, config.effectsvol);
 								}
 							}
 						}
@@ -8102,9 +8117,9 @@ void game_updspellsunder()
 											if(npcinfo[e].spriteset == 11) damage = -damage;
 											if(npcinfo[e].hp > 0 && npcinfo[e].pause < ticks) {
 												game_damagenpc(e, damage, 1);
-												if(menabled == 1 && opeffects == 1) {
+												if(menabled == 1 && config.effects == 1) {
 													int snd = Mix_PlayChannel(-1, sfx[sndfire], 0);
-													Mix_Volume(snd, opeffectsvol);
+													Mix_Volume(snd, config.effectsvol);
 												}
 											}
 										}
@@ -8121,9 +8136,9 @@ void game_updspellsunder()
 										if(player.hp > 0) {
 											game_damageplayer(damage);
 
-											if(menabled == 1 && opeffects == 1) {
+											if(menabled == 1 && config.effects == 1) {
 												int snd = Mix_PlayChannel(-1, sfx[sndfire], 0);
-												Mix_Volume(snd, opeffectsvol);
+												Mix_Volume(snd, config.effectsvol);
 											}
 										}
 									}
@@ -8146,9 +8161,9 @@ void game_updspellsunder()
 
 											SDL_FillRect(clipbg2, &rcSrc, 0);
 
-											if(menabled == 1 && opeffects == 1) {
+											if(menabled == 1 && config.effects == 1) {
 												int snd = Mix_PlayChannel(-1, sfx[sndfire], 0);
-												Mix_Volume(snd, opeffectsvol);
+												Mix_Volume(snd, config.effectsvol);
 											}
 
 											game_addFloatIcon(99, postinfo[e][0], postinfo[e][1]);
@@ -8211,9 +8226,9 @@ void game_updspellsunder()
 
 								if(player.hp > 0) {
 									game_damageplayer(damage);
-									if(menabled == 1 && opeffects == 1) {
+									if(menabled == 1 && config.effects == 1) {
 										int snd = Mix_PlayChannel(-1, sfx[sndfire], 0);
-										Mix_Volume(snd, opeffectsvol);
+										Mix_Volume(snd, config.effectsvol);
 									}
 								}
 
@@ -8269,16 +8284,16 @@ void sys_initialize()
 		floatstri[i] = malloc(64); // 64 bytes each string (should be enough)
 
 	// set default values
-	SCR_WIDTH = 320;
-	SCR_HEIGHT = 240;
-	SCR_BITS = 32;
-	HWACCEL = 0;
-	HWSURFACE = SDL_SWSURFACE;
-	opfullscreen = 0;
-	opmusic = 1;
-	opeffects = 1;
-	opmusicvol = 127;
-	opeffectsvol = 127;
+	config.scr_width = 320;
+	config.scr_height = 240;
+	config.scr_bpp = 32;
+	config.hwaccel = 0;
+	config.hwsurface = SDL_SWSURFACE;
+	config.fullscreen = 0;
+	config.music = 1;
+	config.effects = 1;
+	config.musicvol = 127;
+	config.effectsvol = 127;
 
 	fp = fopen(config_ini, "r");
 	if(fp) {
@@ -8287,43 +8302,43 @@ void sys_initialize()
 
 			if(strcmp(arg, "SCR_WIDTH:") == 0) {
 				fgets(line, sizeof(line), fp);
-				sscanf(line, "%i", &SCR_WIDTH);
+				sscanf(line, "%i", &config.scr_width);
 			} else if(strcmp(arg, "SCR_HEIGHT:") == 0) {
 				fgets(line, sizeof(line), fp);
-				sscanf(line, "%i", &SCR_HEIGHT);
+				sscanf(line, "%i", &config.scr_height);
 			} else if(strcmp(arg, "SCR_BITS:") == 0) {
 				fgets(line, sizeof(line), fp);
-				sscanf(line, "%i", &SCR_BITS);
+				sscanf(line, "%i", &config.scr_bpp);
 			} else if(strcmp(arg, "HWACCEL:YES") == 0) {
-				HWACCEL = SDL_HWACCEL;
+				config.hwaccel = SDL_HWACCEL;
 			} else if(strcmp(arg, "HWSURFACE:YES") == 0) {
-				HWSURFACE = SDL_HWSURFACE;
+				config.hwsurface = SDL_HWSURFACE;
 			} else if(strcmp(arg, "FULLSCREEN:YES") == 0) {
-				opfullscreen = SDL_FULLSCREEN;
+				config.fullscreen = SDL_FULLSCREEN;
 			} else if(strcmp(arg, "MUSIC:YES") == 0) {
-				opmusic = 1;
+				config.music = 1;
 			} else if(strcmp(arg, "SNDEFFECTS:YES") == 0) {
-				opeffects = 1;
+				config.effects = 1;
 			} else if(strcmp(arg, "opmusicvol:") == 0) {
 				fgets(line, sizeof(line), fp);
-				sscanf(line, "%i", &opmusicvol);
+				sscanf(line, "%i", &config.musicvol);
 			} else if(strcmp(arg, "opeffectsvol:") == 0) {
 				fgets(line, sizeof(line), fp);
-				sscanf(line, "%i", &opeffectsvol);
+				sscanf(line, "%i", &config.effectsvol);
 			}
 		}
 
 		fclose(fp);
 	}
 
-	printf("SCR_WIDTH: %i\n", SCR_WIDTH);
-	printf("SCR_HEIGHT: %i\n", SCR_HEIGHT);
-	printf("SCR_BITS: %i\n", SCR_BITS);
+	printf("SCR_WIDTH: %i\n", config.scr_width);
+	printf("SCR_HEIGHT: %i\n", config.scr_height);
+	printf("SCR_BITS: %i\n", config.scr_bpp);
 
-	SCR_TOPX = SCR_WIDTH / 2 - 160;
-	SCR_TOPY = SCR_HEIGHT / 2 - 120;
+	SCR_TOPX = config.scr_width / 2 - 160;
+	SCR_TOPY = config.scr_height / 2 - 120;
 
-	fullscreen = opfullscreen | HWACCEL | HWSURFACE;
+	fullscreen = config.fullscreen | config.hwaccel | config.hwsurface;
 
 	result = SDL_Init(SDL_INIT_EVERYTHING);
 	if(result) {
@@ -8333,7 +8348,7 @@ void sys_initialize()
 
 	atexit(SDL_Quit);
 
-	video = SDL_SetVideoMode(SCR_WIDTH, SCR_HEIGHT, SCR_BITS, fullscreen); // SDL_FULLSCREEN
+	video = SDL_SetVideoMode(config.scr_width, config.scr_height, config.scr_bpp, fullscreen); // SDL_FULLSCREEN
 	if(!video) {
 		printf("Failed to init Video\n");
 		exit(1);
@@ -8347,8 +8362,8 @@ void sys_initialize()
 	videobuffer = SDL_DisplayFormat(video);
 	videobuffer2 = SDL_DisplayFormat(video);
 	videobuffer3 = SDL_DisplayFormat(video);
-	mapbg = SDL_CreateRGBSurface(HWSURFACE, 640, 480, SCR_BITS, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
-	clipbg = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, SCR_BITS, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
+	mapbg = SDL_CreateRGBSurface(config.hwsurface, 640, 480, config.scr_bpp, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
+	clipbg = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, config.scr_bpp, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
 	clipbg2 = SDL_DisplayFormat(video);
 
 	for(int i = 0; i <= 3; i++) {
@@ -8594,7 +8609,7 @@ void sys_LoadItemImgs()
 	temp = IMG_Load("art/icons.bmp");
 
 	for(int i = 0; i <= 20; i++) {
-		itemimg[i] = SDL_CreateRGBSurface(SDL_SWSURFACE, 16, 16, SCR_BITS, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
+		itemimg[i] = SDL_CreateRGBSurface(SDL_SWSURFACE, 16, 16, config.scr_bpp, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
 		SDL_SetColorKey(itemimg[i], SDL_SRCCOLORKEY, SDL_MapRGB(itemimg[i]->format, 255, 0, 255));
 
 		rcSrc.x = i * 16;
@@ -8618,7 +8633,7 @@ void sys_LoadFont()
 		for(int f = 0; f <= 4; f++) {
 			int i2 = i - 32;
 
-			fontchr[i2][f] = SDL_CreateRGBSurface(SDL_SWSURFACE, 8, 8, SCR_BITS, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
+			fontchr[i2][f] = SDL_CreateRGBSurface(SDL_SWSURFACE, 8, 8, config.scr_bpp, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
 			SDL_SetColorKey(fontchr[i2][f], SDL_SRCCOLORKEY, SDL_MapRGB(fontchr[i2][f]->format, 255, 0, 255));
 
 			int col = i2 % 40;
@@ -8900,9 +8915,9 @@ void sys_update()
 		player.sworddamage = player.level * 14 / 10;
 		player.spelldamage = player.level * 13 / 10;
 
-		if(menabled == 1 && opeffects == 1) {
+		if(menabled == 1 && config.effects == 1) {
 			int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
-			Mix_Volume(snd, opeffectsvol);
+			Mix_Volume(snd, config.effectsvol);
 		}
 	}
 
@@ -8955,9 +8970,9 @@ void sys_update()
 		player.hpflash = 0;
 		player.hpflashb = player.hpflashb + 1;
 		if(player.hpflashb == 2) player.hpflashb = 0;
-		if(menabled == 1 && opeffects == 1 && player.hpflashb == 0 && player.hp < player.maxhp / 4) {
+		if(menabled == 1 && config.effects == 1 && player.hpflashb == 0 && player.hp < player.maxhp / 4) {
 			int snd = Mix_PlayChannel(-1, sfx[sndbeep], 0);
-			Mix_Volume(snd, opeffectsvol);
+			Mix_Volume(snd, config.effectsvol);
 		}
 	}
 
