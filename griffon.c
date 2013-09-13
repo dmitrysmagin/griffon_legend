@@ -59,6 +59,7 @@
 #define MAXNPC		32
 #define MAXFLOAT	32
 #define MAXSPELL	32
+
 #define ice		0
 #define steel		1
 #define wood		2
@@ -397,12 +398,9 @@ SDL_Surface *animsa[100];
 float playerattackofs[4][16][3];
 		// [dir] [frame] [x,y ofs, completed(0/1)]
 
-float floattext[MAXFLOAT+1][4];
-		// [id] [framesleft, x, y, col]
-char *floatstri[MAXFLOAT+1];
-
-float  floaticon[MAXFLOAT+1][4];
-		// [id] [framesleft, x, y, ico]
+float floattext[MAXFLOAT][4]; // [id] [framesleft, x, y, col]
+char *floatstri[MAXFLOAT];
+float  floaticon[MAXFLOAT][4]; // [id] [framesleft, x, y, ico]
 
 // special for animset2
 ANIMSET2TYPE animset2[7], animset9[7];
@@ -427,7 +425,7 @@ int triggers[10000][9];
 int triggerloc[320][240], ntriggers;
 
 // npc info
-NPCTYPE npcinfo[MAXNPC+1];
+NPCTYPE npcinfo[MAXNPC];
 int lastnpc;
 
 // music info
@@ -708,7 +706,7 @@ void game_addFloatIcon(int ico, float xloc, float yloc)
 			return;
 		}
 		i++;
-		if(i == MAXFLOAT+1) break;
+		if(i == MAXFLOAT) break;
 	} while(1);
 }
 
@@ -725,7 +723,7 @@ void game_addFloatText(char *stri, float xloc, float yloc, int col)
 			return;
 		}
 		i++;
-		if(i == MAXFLOAT+1) break;
+		if(i == MAXFLOAT) break;
 	} while(1);
 }
 
@@ -2428,7 +2426,7 @@ void game_drawhud()
 
 	SDL_FillRect(videobuffer2, &rcSrc, 0);
 
-	for(int i = 0; i <= MAXFLOAT; i++) {
+	for(int i = 0; i < MAXFLOAT; i++) {
 		if(floattext[i][0] > 0) {
 			int fc = (int)floattext[i][3];
 
@@ -4367,7 +4365,7 @@ void game_loadmap(int mapnum)
 	lastobj = 0;
 	lastnpc = 0;
 
-	for(int i = 0; i <= MAXNPC; i++)
+	for(int i = 0; i < MAXNPC; i++)
 		npcinfo[i].onmap = 0;
 
 	for(int x = 0; x <= 19; x++) {
@@ -4438,7 +4436,7 @@ void game_loadmap(int mapnum)
 	sprintf(name, "mapdb/%04i.npc", mapnum); printf("Reading %s\n", name);
 	fp = fopen(name, "r");
 
-	for(int i = 0; i <= MAXNPC; i++) {
+	for(int i = 0; i < MAXNPC; i++) {
 		INPUT("%i", &npcinfo[i].spriteset);
 		INPUT("%i", &npcinfo[i].x1);
 		INPUT("%i", &npcinfo[i].y1);
@@ -5189,7 +5187,7 @@ void game_processtrigger(int trignum)
 		}
 	}
 
-	for(int i = 0; i <= MAXFLOAT; i++) {
+	for(int i = 0; i < MAXFLOAT; i++) {
 		floattext[i][0] = 0;
 		floaticon[i][0] = 0;
 	}
@@ -5855,7 +5853,7 @@ void game_theend()
 
 
 	y = 0;
-	for(int i = 0; i <= MAXFLOAT; i++) {
+	for(int i = 0; i < MAXFLOAT; i++) {
 		floattext[i][0] = 0;
 		floaticon[i][0] = 0;
 	}
@@ -8336,7 +8334,7 @@ void sys_initialize()
 	sys_initpaths();
 
 	// init char *floatstri[MAXFLOAT]
-	for(int i = 0; i <= MAXFLOAT; i++)
+	for(int i = 0; i < MAXFLOAT; i++)
 		floatstri[i] = malloc(64); // 64 bytes each string (should be enough)
 
 	// set default values
@@ -8907,7 +8905,7 @@ void sys_update()
 		game_checkhit();
 	}
 
-	for(int i = 0; i <= MAXFLOAT; i++) {
+	for(int i = 0; i < MAXFLOAT; i++) {
 		if(floattext[i][0] > 0) {
 			spd = 0.5 * fpsr;
 			floattext[i][0] = floattext[i][0] - spd;
