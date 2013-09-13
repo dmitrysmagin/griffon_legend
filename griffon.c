@@ -1266,7 +1266,7 @@ void game_checkinputs()
 			}
 			break;
 
-		case SDLK_SPACE:
+		case SDLK_LCTRL:
 			if(itemselon == 0 && itemticks < ticks) game_attack();
 
 			if(itemselon == 1 && itemticks < ticks) {
@@ -1418,8 +1418,7 @@ void game_checkinputs()
 			}
 			break;
 
-		case SDLK_LCTRL:
-		case SDLK_RCTRL:
+		case SDLK_LALT:
 			if(itemticks < ticks) {
 				selenemyon = 0;
 				if(itemselon == 1) {
@@ -1689,7 +1688,7 @@ void game_configmenu()
 			if(event.type == SDL_KEYDOWN) {
 				keypause = ticks + tickwait;
 
-				if(keys[SDLK_ESCAPE]) break;
+				if(keys[SDLK_ESCAPE] || keys[SDLK_LALT]) break;
 				if(cursel == 11 || cursel == 12) {
 					if(keys[SDLK_LEFT]) {
 						if(cursel == 11) {
@@ -1738,7 +1737,7 @@ void game_configmenu()
 				if(keys[SDLK_UP]) cursel = cursel - 1;
 				if(keys[SDLK_DOWN]) cursel = cursel + 1;
 
-				if(keys[SDLK_SPACE] || keys[SDLK_RETURN]) {
+				if(keys[SDLK_LCTRL] || keys[SDLK_RETURN]) {
 					if(cursel == 0) {
 						fullscreen = config.fullscreen | config.hwaccel | config.hwsurface;
 
@@ -3688,7 +3687,7 @@ void game_endofgame()
 		if(event.type == SDL_KEYDOWN) spd = 1;
 		if(event.type == SDL_KEYUP) spd = 0.2;
 
-		if(keys[SDLK_ESCAPE]) break;
+		if(keys[SDLK_ESCAPE] || keys[SDLK_LALT]) break;
 	} while(1);
 
 
@@ -4996,7 +4995,7 @@ void game_newgame()
 		keys = SDL_GetKeyState(NULL);
 
 		if(event.type == SDL_KEYDOWN) cnt = 6;
-		if(keys[SDLK_ESCAPE]) goto __exit_do;
+		if(keys[SDLK_ESCAPE] || keys[SDLK_LALT]) goto __exit_do;
 
 		SDL_Delay(10);
 	} while(1);
@@ -5224,7 +5223,7 @@ void game_saveloadnew()
 			if(event.type == SDL_KEYDOWN) {
 				itemticks = ticks + 220;
 
-				if(keys[SDLK_RETURN] || keys[SDLK_SPACE]) {
+				if(keys[SDLK_LCTRL] || keys[SDLK_RETURN]) {
 					// QUIT - non existent :)
 					if(currow == 0 && curcol == 4) {
 						exit(1);
@@ -5420,6 +5419,7 @@ void game_saveloadnew()
 
 				switch(event.key.keysym.sym) {
 				case SDLK_ESCAPE:
+				case SDLK_LALT:
 					if(lowerlock == 0) return;
 					lowerlock = 0;
 					currow = 0;
@@ -5985,14 +5985,14 @@ void game_title(int mode)
 			if(event.type == SDL_KEYDOWN) {
 				keypause = ticks + 150;
 
-				if(keys[SDLK_ESCAPE] && mode == 1) break;
+				if((keys[SDLK_ESCAPE] || keys[SDLK_LALT]) && mode == 1) break;
 				else if(keys[SDLK_UP]) {
 					cursel--;
 					if(cursel < 0) cursel = (mode == 1 ? 3 : 2);
 				} else if(keys[SDLK_DOWN]) {
 					cursel++;
 					if(cursel >= (mode == 1 ? 4 : 3)) cursel = 0;
-				} else if(keys[SDLK_SPACE] || keys[SDLK_RETURN]) {
+				} else if(keys[SDLK_LCTRL] || keys[SDLK_RETURN]) {
 					if(cursel == 0) {
 						game_saveloadnew();
 						ticks = SDL_GetTicks();
