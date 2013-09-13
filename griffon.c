@@ -1419,21 +1419,6 @@ void game_checkinputs()
 			break;
 
 		case SDLK_LCTRL:
-			if(itemticks < ticks) {
-				selenemyon = 0;
-				if(itemselon == 1) {
-					itemselon = 0;
-					itemticks = ticks + 220;
-					forcepause = 0;
-				} else {
-					itemselon = 1;
-					itemticks = ticks + 220;
-					forcepause = 1;
-					player.itemselshade = 0;
-				}
-			}
-			break;
-
 		case SDLK_RCTRL:
 			if(itemticks < ticks) {
 				selenemyon = 0;
