@@ -105,6 +105,7 @@ typedef struct {
 	float	hpflash;
 	int	hpflashb;
 	int	level;
+	int	maxlevel;
 	int	sword;
 	int	shield;
 	int	armour;
@@ -349,9 +350,6 @@ char config_ini[64] = "config.ini";
 char player_sav[61] = "data/player%i.sav";
 
 SDL_Rect rc, rc2, rcSrc, rcDest, rcSrc2;
-
-
-int maxlevel;
 
 // inventory
 int inventoryalpha, inventory[6];
@@ -714,6 +712,7 @@ int state_load(int slotnum)
 			INPUT("%i", &player.maxhp);
 			INPUT("%f", &player.hpflash);
 			INPUT("%i", &player.level);
+			INPUT("%i", &player.maxlevel);
 			INPUT("%i", &player.sword);
 			INPUT("%i", &player.shield);
 			INPUT("%i", &player.armour);
@@ -798,6 +797,7 @@ int state_load_player(int slotnum)
 			INPUT("%i", &playera.maxhp);
 			INPUT("%f", &playera.hpflash);
 			INPUT("%i", &playera.level);
+			INPUT("%i", &playera.maxlevel);
 			INPUT("%i", &playera.sword);
 			INPUT("%i", &playera.shield);
 			INPUT("%i", &playera.armour);
@@ -856,6 +856,7 @@ int state_save(int slotnum)
 			PRINT("%i", player.maxhp);
 			PRINT("%f", player.hpflash);
 			PRINT("%i", player.level);
+			PRINT("%i", player.maxlevel);
 			PRINT("%i", player.sword);
 			PRINT("%i", player.shield);
 			PRINT("%i", player.armour);
@@ -2814,7 +2815,7 @@ void game_drawhud()
 		sys_print(videobuffer, line, sx, sy, cc);
 
 		sprintf(line, "Level : %i", player.level);
-		if(player.level == 22) strcpy(line, "Level : MAX");
+		if(player.level == player.maxlevel) strcpy(line, "Level : MAX");
 		sys_print(videobuffer, line, sx, sy + 8, 0);
 
 		int mx = player.exp * 14 / player.nextlevel;
@@ -5232,6 +5233,7 @@ __exit_do:
 	player.maxhp = 0;
 	player.hpflash = 0;
 	player.level = 0;
+	player.maxlevel = 0;
 	player.sword = 0;
 	player.shield = 0;
 	player.armour = 0;
@@ -5269,6 +5271,7 @@ __exit_do:
 
 	player.sword = 1;
 	player.level = 1;
+	player.maxlevel = 22;
 	player.nextlevel = 50;
 	player.shield = 1;
 	player.armour = 1;
@@ -8431,8 +8434,6 @@ void sys_initialize()
 	fpsr = 1;
 	nextticks = ticks + 1000;
 
-	maxlevel = 22;
-
 	for(int i = 0; i <= 15; i++) {
 		playerattackofs[0][i][0] = 0; // -1// -(i + 1)
 		playerattackofs[0][i][1] = -sin(3.14159 * 2 * (i + 1) / 16) * 2 - 1;
@@ -8924,7 +8925,7 @@ void sys_update()
 		}
 	}
 
-	if(player.level == maxlevel) player.exp = 0;
+	if(player.level == player.maxlevel) player.exp = 0;
 
 	if(player.exp >= player.nextlevel) {
 		player.level = player.level + 1;
