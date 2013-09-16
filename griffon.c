@@ -111,7 +111,6 @@ typedef struct {
 	int	armour;
 	int	foundspell[6];
 	float	spellcharge[6];
-	int	flasks;
 	int	foundcrystal;
 	float	crystalcharge;
 	float	attackstrength;
@@ -119,12 +118,9 @@ typedef struct {
 	int	spelldamage;
 	int	sworddamage;
 
-	int	masterkey;
-
 	int	exp;
 	int	nextlevel;
 
-	int	windowloc;
 	int	pause;
 
 	float	itemselshade;
@@ -729,7 +725,6 @@ int state_load(int slotnum)
 			INPUT("%f", &player.attackstrength);
 			INPUT("%i", &player.spelldamage);
 			INPUT("%i", &player.sworddamage);
-			INPUT("%i", &player.masterkey);
 			INPUT("%i", &player.exp);
 			INPUT("%i", &player.nextlevel);
 			for(int a = 0; a <= 99; a++) {
@@ -813,7 +808,6 @@ int state_load_player(int slotnum)
 			INPUT("%f", &playera.attackstrength);
 			INPUT("%i", &playera.spelldamage);
 			INPUT("%i", &playera.sworddamage);
-			INPUT("%i", &playera.masterkey);
 			INPUT("%i", &playera.exp);
 			INPUT("%i", &playera.nextlevel);
 
@@ -872,7 +866,6 @@ int state_save(int slotnum)
 			PRINT("%f", player.attackstrength);
 			PRINT("%i", player.spelldamage);
 			PRINT("%i", player.sworddamage);
-			PRINT("%i", player.masterkey);
 			PRINT("%i", player.exp);
 			PRINT("%i", player.nextlevel);
 			for(int a = 0; a <= 99; a++) {
@@ -5241,13 +5234,11 @@ __exit_do:
 		player.foundspell[i] = 0;
 		player.spellcharge[i] = 0;
 	}
-	player.flasks = 0;
 	player.foundcrystal = 0;
 	player.crystalcharge = 0;
 	player.attackstrength = 0;
 	player.spelldamage = 0;
 	player.sworddamage = 0;
-	player.masterkey = 0;
 	player.exp = 0;
 	player.nextlevel = 0;
 
