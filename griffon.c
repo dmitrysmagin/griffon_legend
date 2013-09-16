@@ -67,11 +67,11 @@
 #define fire		4
 
 // inventory items
-//#define flask		0
-//#define doubleflask	1
-//#define shock		2
-//#define normalkey	3
-//#define masterkey	4
+#define INV_FLASK	0
+#define INV_DOUBLEFLASK	1
+#define INV_SHOCK	2
+#define INV_NORMALKEY	3
+#define INV_MASTERKEY	4
 
 #define sndbite		0
 #define sndcrystal	1
@@ -953,9 +953,8 @@ void game_attack()
 				if(o2 == 10) o = 10;
 
 				int oscript = objectinfo[o][5];
-				if(oscript == 0 && player.inventory[0] < 9) {
-					player.inventory[0] = player.inventory[0] + 1;
-					if(player.inventory[0] > 9) player.inventory[0] = 9;
+				if(oscript == 0 && player.inventory[INV_FLASK] < 9) {
+					player.inventory[INV_FLASK]++;
 					game_addFloatIcon(6, lx * 16, (ly - 1) * 16);
 
 					objmapf[curmap][lx][ly - 1] = 1;
@@ -972,7 +971,7 @@ void game_attack()
 					return;
 				}
 
-				if(oscript == 0 && player.inventory[0] == 9) {
+				if(oscript == 0 && player.inventory[INV_FLASK] == 9) {
 					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndchest], 0);
 						Mix_Volume(snd, config.effectsvol);
@@ -984,7 +983,7 @@ void game_attack()
 				}
 
 				if(oscript == 2) {
-					player.inventory[4] = player.inventory[4] + 1;
+					player.inventory[INV_MASTERKEY]++;
 
 					game_addFloatIcon(14, lx * 16, (ly - 1) * 16);
 
@@ -1059,8 +1058,8 @@ void game_attack()
 				}
 
 				if(oscript == 6) {
-					if(player.inventory[3] < 9) {
-						player.inventory[3] = player.inventory[3] + 1;
+					if(player.inventory[INV_NORMALKEY] < 9) {
+						player.inventory[INV_NORMALKEY]++;
 
 						for(int s = 20; s <= 23; s++) {
 							if(scriptflag[s][0] == 1) {
@@ -1089,9 +1088,8 @@ void game_attack()
 					}
 				}
 
-				if(oscript == 7 && player.inventory[1] < 9) {
-					player.inventory[1] = player.inventory[1] + 1;
-					if(player.inventory[1] > 9) player.inventory[1] = 9;
+				if(oscript == 7 && player.inventory[INV_DOUBLEFLASK] < 9) {
+					player.inventory[INV_DOUBLEFLASK]++;
 					game_addFloatIcon(12, lx * 16, (ly - 1) * 16);
 
 					objmapf[curmap][lx][ly - 1] = 1;
@@ -1108,7 +1106,7 @@ void game_attack()
 					return;
 				}
 
-				if(oscript == 7 && player.inventory[1] == 9) {
+				if(oscript == 7 && player.inventory[INV_DOUBLEFLASK] == 9) {
 					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndchest], 0);
 						Mix_Volume(snd, config.effectsvol);
@@ -1119,9 +1117,8 @@ void game_attack()
 					return;
 				}
 
-				if(oscript == 10 && player.inventory[1] < 9) {
-					player.inventory[1] = player.inventory[1] + 1;
-					if(player.inventory[1] > 9) player.inventory[1] = 9;
+				if(oscript == 10 && player.inventory[INV_DOUBLEFLASK] < 9) {
+					player.inventory[INV_DOUBLEFLASK]++;
 					game_addFloatIcon(12, lx * 16, (ly - 1) * 16);
 
 					objmapf[curmap][lx][ly - 1] = 1;
@@ -1138,7 +1135,7 @@ void game_attack()
 					return;
 				}
 
-				if(oscript == 10 && player.inventory[1] == 9) {
+				if(oscript == 10 && player.inventory[INV_DOUBLEFLASK] == 9) {
 					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndchest], 0);
 						Mix_Volume(snd, config.effectsvol);
@@ -1149,9 +1146,8 @@ void game_attack()
 					return;
 				}
 
-				if(oscript == 11 && player.inventory[2] < 9) {
-					player.inventory[2] = player.inventory[2] + 1;
-					if(player.inventory[2] > 9) player.inventory[2] = 9;
+				if(oscript == 11 && player.inventory[INV_SHOCK] < 9) {
+					player.inventory[INV_SHOCK]++;
 					game_addFloatIcon(17, lx * 16, (ly - 1) * 16);
 
 					objmapf[curmap][lx][ly - 1] = 1;
@@ -1168,7 +1164,7 @@ void game_attack()
 					return;
 				}
 
-				if(oscript == 11 && player.inventory[2] == 9) {
+				if(oscript == 11 && player.inventory[INV_SHOCK] == 9) {
 					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndchest], 0);
 						Mix_Volume(snd, config.effectsvol);
@@ -1480,7 +1476,7 @@ void game_checkinputs()
 			if(itemselon == 0 && itemticks < ticks) game_attack();
 
 			if(itemselon == 1 && itemticks < ticks) {
-				if(curitem == 0 && player.inventory[0] > 0) {
+				if(curitem == 0 && player.inventory[INV_FLASK] > 0) {
 					itemticks = ticks + ntickdelay;
 
 					int heal = 50;
@@ -1494,7 +1490,7 @@ void game_checkinputs()
 					sprintf(text, "+%i", heal);
 					game_addFloatText(text, player.px + 16 - 4 * strlen(text), player.py + 16, 5);
 
-					player.inventory[0] = player.inventory[0] - 1;
+					player.inventory[INV_FLASK]--;
 
 					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
@@ -1505,7 +1501,7 @@ void game_checkinputs()
 					forcepause = 0;
 				}
 
-				if(curitem == 1 && player.inventory[1] > 0) {
+				if(curitem == 1 && player.inventory[INV_DOUBLEFLASK] > 0) {
 					itemticks = ticks + ntickdelay;
 
 					int heal = 200;
@@ -1519,7 +1515,7 @@ void game_checkinputs()
 					sprintf(text, "+%i", heal);
 					game_addFloatText(text, player.px + 16 - 4 * strlen(text), player.py + 16, 5);
 
-					player.inventory[1] = player.inventory[1] - 1;
+					player.inventory[INV_DOUBLEFLASK]--;
 
 					if(menabled == 1 && config.effects == 1) {
 						int snd = Mix_PlayChannel(-1, sfx[sndpowerup], 0);
@@ -1531,12 +1527,12 @@ void game_checkinputs()
 
 				}
 
-				if(curitem == 2 && player.inventory[2] > 0) {
+				if(curitem == 2 && player.inventory[INV_SHOCK] > 0) {
 					game_castspell(8, player.px, player.py, npcinfo[curenemy].x, npcinfo[curenemy].y, 0);
 
 					forcepause = 1;
 
-					player.inventory[2] = player.inventory[2] - 1;
+					player.inventory[INV_SHOCK]--;
 
 					itemticks = ticks + ntickdelay;
 					selenemyon = 0;
@@ -1544,11 +1540,11 @@ void game_checkinputs()
 
 				}
 
-				if(curitem == 3 && player.inventory[3] > 0 && canusekey == 1 && locktype == 1) {
+				if(curitem == 3 && player.inventory[INV_NORMALKEY] > 0 && canusekey == 1 && locktype == 1) {
 					roomlocks[roomtounlock] = 0;
 					game_eventtext("UnLocked!");
 
-					player.inventory[3] = player.inventory[3] - 1;
+					player.inventory[INV_NORMALKEY]--;
 
 					itemticks = ticks + ntickdelay;
 					selenemyon = 0;
@@ -1556,11 +1552,11 @@ void game_checkinputs()
 					return;
 				}
 
-				if(curitem == 4 && player.inventory[4] > 0 && canusekey == 1 && locktype == 2) {
+				if(curitem == 4 && player.inventory[INV_MASTERKEY] > 0 && canusekey == 1 && locktype == 2) {
 					roomlocks[roomtounlock] = 0;
 					game_eventtext("UnLocked!");
 
-					player.inventory[4] = player.inventory[4] - 1;
+					player.inventory[INV_MASTERKEY]--;
 
 					itemticks = ticks + ntickdelay;
 					selenemyon = 0;
@@ -4255,11 +4251,10 @@ void game_handlewalking()
 
 	if(o > -1) {
 		// fsk
-		if(objectinfo[o][4] == 2 && player.inventory[0] < 9) {
+		if(objectinfo[o][4] == 2 && player.inventory[INV_FLASK] < 9) {
 			objmap[lx][ly] = -1;
 
-			player.inventory[0] = player.inventory[0] + 1;
-			if(player.inventory[0] > 9) player.inventory[0] = 9;
+			player.inventory[INV_FLASK]++;
 			game_addFloatIcon(6, lx * 16, ly * 16);
 
 			objmapf[curmap][lx][ly] = 1;
@@ -4270,11 +4265,10 @@ void game_handlewalking()
 			}
 		}
 
-		if(objectinfo[o][5] == 7 && player.inventory[1] < 9) {
+		if(objectinfo[o][5] == 7 && player.inventory[INV_DOUBLEFLASK] < 9) {
 			objmap[lx][ly] = -1;
 
-			player.inventory[1] = player.inventory[1] + 1;
-			if(player.inventory[1] > 9) player.inventory[1] = 9;
+			player.inventory[INV_DOUBLEFLASK]++;
 			game_addFloatIcon(12, lx * 16, ly * 16);
 
 			objmapf[curmap][lx][ly] = 1;
@@ -4285,11 +4279,10 @@ void game_handlewalking()
 			}
 		}
 
-		if(objectinfo[o][5] == 9 && player.inventory[2] < 9 && (curmap == 41 && scriptflag[9][1] == 0)) {
+		if(objectinfo[o][5] == 9 && player.inventory[INV_SHOCK] < 9 && (curmap == 41 && scriptflag[9][1] == 0)) {
 			objmap[lx][ly] = -1;
 
-			player.inventory[2] = player.inventory[2] + 1;
-			if(player.inventory[2] > 9) player.inventory[2] = 9;
+			player.inventory[INV_SHOCK]++;
 			game_addFloatIcon(17, lx * 16, ly * 16);
 
 			objmapf[curmap][lx][ly] = 1;
@@ -4302,11 +4295,10 @@ void game_handlewalking()
 
 		}
 
-		if(objectinfo[o][5] == 9 && player.inventory[2] < 9) {
+		if(objectinfo[o][5] == 9 && player.inventory[INV_SHOCK] < 9) {
 			objmap[lx][ly] = -1;
 
-			player.inventory[2] = player.inventory[2] + 1;
-			if(player.inventory[2] > 9) player.inventory[2] = 9;
+			player.inventory[INV_SHOCK]++;
 			game_addFloatIcon(17, lx * 16, ly * 16);
 
 			objmapf[curmap][lx][ly] = 1;
