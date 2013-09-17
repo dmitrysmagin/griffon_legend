@@ -109,9 +109,9 @@ typedef struct {
 	int	sword;
 	int	shield;
 	int	armour;
-	int	foundspell[6];
-	float	spellcharge[6];
-	int	inventory[6];
+	int	foundspell[5];
+	float	spellcharge[5];
+	int	inventory[5];
 	int	foundcrystal;
 	float	crystalcharge;
 	float	attackstrength;
@@ -710,11 +710,11 @@ int state_load(int slotnum)
 			INPUT("%i", &player.sword);
 			INPUT("%i", &player.shield);
 			INPUT("%i", &player.armour);
-			for(int i = 0; i <= 5; i++) {
+			for(int i = 0; i < 5; i++) {
 				INPUT("%i", &player.foundspell[i]);
 				INPUT("%f", &player.spellcharge[i]);
 			}
-			for(int a = 0; a <= 4; a++) {
+			for(int a = 0; a < 5; a++) {
 				INPUT("%i", &player.inventory[a]);
 			}
 
@@ -794,11 +794,11 @@ int state_load_player(int slotnum)
 			INPUT("%i", &playera.sword);
 			INPUT("%i", &playera.shield);
 			INPUT("%i", &playera.armour);
-			for(int i = 0; i <= 5; i++) {
+			for(int i = 0; i < 5; i++) {
 				INPUT("%i", &playera.foundspell[i]);
 				INPUT("%f", &playera.spellcharge[i]);
 			}
-			for(int a = 0; a <= 4; a++) {
+			for(int a = 0; a < 5; a++) {
 				INPUT("%i", &playera.inventory[a]);
 			}
 			INPUT("%i", &playera.foundcrystal);
@@ -852,11 +852,11 @@ int state_save(int slotnum)
 			PRINT("%i", player.sword);
 			PRINT("%i", player.shield);
 			PRINT("%i", player.armour);
-			for(int i = 0; i <= 5; i++) {
+			for(int i = 0; i < 5; i++) {
 				PRINT("%i", player.foundspell[i]);
 				PRINT("%f", player.spellcharge[i]);
 			}
-			for(int a = 0; a <= 4; a++) {
+			for(int a = 0; a < 5; a++) {
 				PRINT("%i", player.inventory[a]);
 			}
 			PRINT("%i", player.foundcrystal);
@@ -2710,7 +2710,7 @@ void game_drawhud()
 			SDL_FillRect(videobuffer, &rcSrc2, ccc);
 
 
-			for(int i = 0; i <= 4; i++) {
+			for(int i = 0; i < 5; i++) {
 				rcSrc.x = rcSrc.x + 17;
 
 				if(player.foundspell[i] == 1) {
@@ -2936,7 +2936,7 @@ void game_drawhud()
 			SDL_FillRect(videobuffer, &rcSrc2, ccc);
 
 
-			for(int i = 0; i <= 3; i++) {
+			for(int i = 0; i < 4; i++) { // ?? i < 5
 				rcSrc.x = 243;
 				rcSrc.y = 91 + i * 24;
 				sy = rcSrc.y;
@@ -5220,7 +5220,7 @@ __exit_do:
 	player.sword = 0;
 	player.shield = 0;
 	player.armour = 0;
-	for(int i = 0; i <= 5; i++) {
+	for(int i = 0; i < 5; i++) {
 		player.foundspell[i] = 0;
 		player.spellcharge[i] = 0;
 		player.inventory[i] = 0;
@@ -5596,7 +5596,7 @@ void game_saveloadnew()
 
 					SDL_BlitSurface(itemimg[7], NULL, videobuffer, &rcSrc);
 
-					for(int i = 0; i <= 4; i++) {
+					for(int i = 0; i < 5; i++) {
 						rcSrc.x = rcSrc.x + 17;
 						if(playera.foundspell[i] == 1) SDL_BlitSurface(itemimg[8 + i], NULL, videobuffer, &rcSrc);
 					}
@@ -7605,8 +7605,8 @@ void game_updspells()
 
 					char line[256];
 					strcpy(line, "Found... nothing...");
-					f = 0;
-					do {
+
+					for(int f = 0; f < 5; f++) {
 						if(foundel[f] == 1 && player.foundspell[f] == 0) {
 							player.foundspell[f] = 1;
 							player.spellcharge[f] = 0;
@@ -7616,10 +7616,7 @@ void game_updspells()
 							if(f == 3) strcpy(line, "Found... Fire Essence");
 							break;
 						}
-
-						f=f+1;
-						if(f == 5) break;
-					} while(1);
+					}
 
 					game_eventtext(line);
 				}
@@ -8940,7 +8937,7 @@ void sys_update()
 		if(player.foundcrystal == 1) player.crystalcharge += 5 * player.level * 0.001 * fpsr;
 		if(player.crystalcharge > 100) player.crystalcharge = 100;
 
-		for(int i = 0; i <= 4; i++) {
+		for(int i = 0; i < 5; i++) {
 			if(player.foundspell[i] == 1) player.spellcharge[i] += 1 * player.level * 0.01 * fpsr;
 			if(player.spellcharge[i] > 100) player.spellcharge[i] = 100;
 		}
