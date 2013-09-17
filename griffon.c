@@ -431,9 +431,6 @@ Mix_Chunk *sfx[21];
 int roomlocks[201], saidlocked, canusekey, locktype, roomtounlock, saidjammed;
 // set to 1 for normal key, set to 2 for master, set to 0 if unlocked
 
-// dialog
-int dialogflags[1000];
-
 // ysort
 int ysort[2401], lasty, firsty;
 
