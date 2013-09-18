@@ -1892,53 +1892,58 @@ void game_configmenu()
 				keypause = ticks + tickwait;
 
 				if(keys[SDLK_ESCAPE] || keys[SDLK_LALT]) break;
-				if(cursel == 11 || cursel == 12) {
-					if(keys[SDLK_LEFT]) {
-						if(cursel == 11) {
-							config.musicvol = config.musicvol - 25;
-							if(config.musicvol < 0) config.musicvol = 0;
 
-							Mix_Volume(musicchannel, config.musicvol);
-							Mix_Volume(menuchannel, config.musicvol);
-						} else if(cursel == 12) {
-							config.effectsvol = config.effectsvol - 25;
-							if(config.effectsvol < 0) config.effectsvol = 0;
+				if(keys[SDLK_LEFT]) {
+					if(cursel == 11) {
+						config.musicvol = config.musicvol - 25;
+						if(config.musicvol < 0) config.musicvol = 0;
 
-							Mix_Volume(-1, config.effectsvol);
-							Mix_Volume(musicchannel, config.musicvol);
-							Mix_Volume(menuchannel, config.musicvol);
+						Mix_Volume(musicchannel, config.musicvol);
+						Mix_Volume(menuchannel, config.musicvol);
+					} else if(cursel == 12) {
+						config.effectsvol = config.effectsvol - 25;
+						if(config.effectsvol < 0) config.effectsvol = 0;
 
-							if(menabled == 1 && config.effects == 1) {
-								int snd = Mix_PlayChannel(-1, sfx[snddoor], 0);
-								Mix_Volume(snd, config.effectsvol);
-							}
+						Mix_Volume(-1, config.effectsvol);
+						Mix_Volume(musicchannel, config.musicvol);
+						Mix_Volume(menuchannel, config.musicvol);
+
+						if(menabled == 1 && config.effects == 1) {
+							int snd = Mix_PlayChannel(-1, sfx[snddoor], 0);
+							Mix_Volume(snd, config.effectsvol);
 						}
 					}
-					if(keys[SDLK_RIGHT]) {
-						if(cursel == 11) {
-							config.musicvol = config.musicvol + 25;
-							if(config.musicvol > 255) config.musicvol = 255;
+				}
+				if(keys[SDLK_RIGHT]) {
+					if(cursel == 11) {
+						config.musicvol = config.musicvol + 25;
+						if(config.musicvol > 255) config.musicvol = 255;
 
-							Mix_Volume(musicchannel, config.musicvol);
-							Mix_Volume(menuchannel, config.musicvol);
-						} else if(cursel == 12) {
-							config.effectsvol = config.effectsvol + 25;
-							if(config.effectsvol > 255) config.effectsvol = 255;
+						Mix_Volume(musicchannel, config.musicvol);
+						Mix_Volume(menuchannel, config.musicvol);
+					} else if(cursel == 12) {
+						config.effectsvol = config.effectsvol + 25;
+						if(config.effectsvol > 255) config.effectsvol = 255;
 
-							Mix_Volume(-1, config.effectsvol);
-							Mix_Volume(musicchannel, config.musicvol);
-							Mix_Volume(menuchannel, config.musicvol);
+						Mix_Volume(-1, config.effectsvol);
+						Mix_Volume(musicchannel, config.musicvol);
+						Mix_Volume(menuchannel, config.musicvol);
 
-							if(menabled == 1 && config.effects == 1) {
-								int snd = Mix_PlayChannel(-1, sfx[snddoor], 0);
-								Mix_Volume(snd, config.effectsvol);
-							}
+						if(menabled == 1 && config.effects == 1) {
+							int snd = Mix_PlayChannel(-1, sfx[snddoor], 0);
+							Mix_Volume(snd, config.effectsvol);
 						}
 					}
 				}
 
-				if(keys[SDLK_UP]) cursel = cursel - 1;
-				if(keys[SDLK_DOWN]) cursel = cursel + 1;
+				if(keys[SDLK_UP]) {
+					cursel--;
+					if(cursel < 0) cursel = 14;
+				}
+				if(keys[SDLK_DOWN]) {
+					cursel++;
+					if(cursel > 14) cursel = 0;
+				}
 
 				if(keys[SDLK_LCTRL] || keys[SDLK_RETURN]) {
 					if(cursel == 0) {
@@ -2045,9 +2050,6 @@ void game_configmenu()
 						break;
 					}
 				}
-
-				if(cursel == -1) cursel = 14;
-				if(cursel == 15) cursel = 0;
 			}
 		}
 
