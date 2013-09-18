@@ -346,7 +346,7 @@ CONFIG config = {
 char config_ini[64] = "config.ini";
 char player_sav[61] = "data/player%i.sav";
 
-SDL_Rect rc, rc2, rcSrc, rcDest, rcSrc2;
+SDL_Rect rc, rc2, rcSrc, rcDest;
 
 // -----------special case
 int dontdrawover;	// used in map24 so that the candles dont draw over the boss, default set to 0
@@ -597,6 +597,18 @@ do {					\
 } while(0)
 
 // CODE GOES HERE -------------------------------------------------------------
+
+void game_fillrect(SDL_Surface *surface, int x, int y, int w, int h, int color)
+{
+	SDL_Rect src;
+
+	src.x = x;
+	src.y = y;
+	src.w = w;
+	src.h = h;
+
+	SDL_FillRect(surface, &src, color);
+}
 
 void config_load(CONFIG *config)
 {
@@ -2590,6 +2602,15 @@ void game_drawanims(int Layer)
 	}
 }
 
+int hud_recalc(int a, int b, int c)
+{
+	int result = a * b / c;
+
+	return result > b ? b : result;
+}
+
+#define RGB(R, G, B) (SDL_MapRGB(videobuffer->format, (R), (G), (B)))
+
 void game_drawhud()
 {
 	char line[128];
@@ -2681,33 +2702,16 @@ void game_drawhud()
 		rcSrc.x = nx - 17 + 48;
 		rcSrc.y = sy;
 
+		// spells in game
 		if(player.foundcrystal == 1) {
 			rcSrc.x = rcSrc.x + 17;
 
 			SDL_BlitSurface(itemimg[7], NULL, videobuffer, &rcSrc);
 
-			ccc = SDL_MapRGB(videobuffer->format, 0, 32, 32);
-
-			rcSrc2.x = rcSrc.x;
-			rcSrc2.y = sy + 16;
-			rcSrc2.w = 16;
-			rcSrc2.h = 4;
-
-			SDL_FillRect(videobuffer, &rcSrc2, ccc);
-
-			ccc = SDL_MapRGB(videobuffer->format, 0, 224, 64);
-			if(player.crystalcharge == 100) ccc = SDL_MapRGB(videobuffer->format, 255, 128, 32);
-
-			int mx = player.crystalcharge / 100 * 14;
-			if(mx > 14) mx = 14;
-
-			rcSrc2.x = rcSrc.x + 1;
-			rcSrc2.y = sy + 17;
-			rcSrc2.w = mx;
-			rcSrc2.h = 2;
-
-			SDL_FillRect(videobuffer, &rcSrc2, ccc);
-
+			game_fillrect(videobuffer, rcSrc.x, sy + 16, 16, 4, RGB(0, 32, 32));
+			game_fillrect(videobuffer, rcSrc.x + 1, sy + 17,
+					hud_recalc(player.crystalcharge, 14, 100), 2, 
+					player.crystalcharge == 100 ? RGB(255, 128, 32) : RGB(0, 224, 64));
 
 			for(int i = 0; i < 5; i++) {
 				rcSrc.x = rcSrc.x + 17;
@@ -2715,27 +2719,10 @@ void game_drawhud()
 				if(player.foundspell[i] == 1) {
 					SDL_BlitSurface(itemimg[8 + i], NULL, videobuffer, &rcSrc);
 
-					ccc = SDL_MapRGB(videobuffer->format, 0, 32, 32);
-
-					rcSrc2.x = rcSrc.x;
-					rcSrc2.y = sy + 16;
-					rcSrc2.w = 16;
-					rcSrc2.h = 4;
-
-					SDL_FillRect(videobuffer, &rcSrc2, ccc);
-
-					ccc = SDL_MapRGB(videobuffer->format, 0, 224, 64);
-					if(player.spellcharge[i] == 100) ccc = SDL_MapRGB(videobuffer->format, 255, 128, 32);
-
-					mx = player.spellcharge[i] / 100 * 14;
-					if(mx > 14) mx = 14;
-
-					rcSrc2.x = rcSrc.x + 1;
-					rcSrc2.y = sy + 17;
-					rcSrc2.w = mx;
-					rcSrc2.h = 2;
-
-					SDL_FillRect(videobuffer, &rcSrc2, ccc);
+					game_fillrect(videobuffer, rcSrc.x, sy + 16, 16, 4, RGB(0, 32, 32));
+					game_fillrect(videobuffer, rcSrc.x + 1, sy + 17,
+							hud_recalc(player.spellcharge[i], 14, 100), 2,
+							player.spellcharge[i] == 100 ? RGB(255, 128, 32) : RGB(0, 224, 64));
 				}
 			}
 		}
@@ -2779,86 +2766,38 @@ void game_drawhud()
 		for(int b = 0; b <= 6; b++) {
 			for(int a = 0; a <= 12; a++) {
 				if(invmap[amap][b][a] == curmap) {
-					rcSrc2.x = 46 + 9 + a * 9 + 2;
-					rcSrc2.y = 46 + 77 + b * 9 + 1;
-					rcSrc2.w = 6;
-					rcSrc2.h = 6;
+					game_fillrect(videobuffer, 46 + 9 + a * 9 + 2, 46 + 77 + b * 9 + 1, 6, 6, ccc);
 				}
 			}
 		}
-
-		SDL_FillRect(videobuffer, &rcSrc2, ccc);
 
 		if(amap == 1) {
 			sys_print(videobuffer, "L1", 46 + 9, 46 + 77, 0);
 			sys_print(videobuffer, "L2", 46 + 9 + 7 * 9, 46 + 77, 0);
 		}
 
-		int cc = 0;
-		if(player.hp <= player.maxhp * 0.25) cc = (int)(player.hpflash);
-
 		sprintf(line, "Health: %i/%i", player.hp, player.maxhp);
-		sys_print(videobuffer, line, sx, sy, cc);
+		sys_print(videobuffer, line, sx, sy, player.hp <= player.maxhp * 0.25 ? (int)player.hpflash : 0);
 
 		sprintf(line, "Level : %i", player.level);
 		if(player.level == player.maxlevel) strcpy(line, "Level : MAX");
 		sys_print(videobuffer, line, sx, sy + 8, 0);
 
-		int mx = player.exp * 14 / player.nextlevel;
-		if(mx > 14) mx = 14;
+		// experience
+		game_fillrect(videobuffer, sx + 64, sy + 16, 16, 4, RGB(0, 32, 32));
+		game_fillrect(videobuffer, sx + 65, sy + 17,
+				hud_recalc(player.exp, 14, player.nextlevel), 2, RGB(0, 224, 64));
 
-		ccc = SDL_MapRGB(videobuffer->format, 0, 32, 32);
+		// attack strength
+		game_fillrect(videobuffer, sx + 64, sy + 16, 56, 6, RGB(0, 32, 32));
+		game_fillrect(videobuffer, sx + 1, sy + 17,
+				hud_recalc(player.attackstrength, 54, 100), 2,
+				player.attackstrength == 100 ? RGB(255, 128, 32) : RGB(0, 64, 224));
 
-		rcSrc2.x = sx + 64;
-		rcSrc2.y = sy + 16;
-		rcSrc2.w = 16;
-		rcSrc2.h = 4;
-
-		SDL_FillRect(videobuffer, &rcSrc2, ccc);
-
-		ccc = SDL_MapRGB(videobuffer->format, 0, 224, 64);
-
-		rcSrc2.x = sx + 65;
-		rcSrc2.y = sy + 17;
-		rcSrc2.w = mx;
-		rcSrc2.h = 2;
-
-		SDL_FillRect(videobuffer, &rcSrc2, ccc);
-
-		mx = player.attackstrength / 100 * 54;
-		if(mx > 54) mx = 54;
-
-		int mx2 = player.spellstrength / 100 * 54;
-		if(mx2 > 54) mx2 = 54;
-
-		ccc = SDL_MapRGB(videobuffer->format, 0, 32, 32);
-
-		rcSrc2.x = sx;
-		rcSrc2.y = sy + 16;
-		rcSrc2.w = 56;
-		rcSrc2.h = 6;
-
-		SDL_FillRect(videobuffer, &rcSrc2, ccc);
-
-		ccc = SDL_MapRGB(videobuffer->format, 0, 64, 224);
-		if(player.attackstrength == 100) ccc = SDL_MapRGB(videobuffer->format, 255, 128, 32);
-
-		rcSrc2.x = sx + 1;
-		rcSrc2.y = sy + 17;
-		rcSrc2.w = mx;
-		rcSrc2.h = 2;
-
-		SDL_FillRect(videobuffer, &rcSrc2, ccc);
-
-		ccc = SDL_MapRGB(videobuffer->format, 128, 0, 224);
-		if(player.spellstrength == 100) ccc = SDL_MapRGB(videobuffer->format, 224, 0, 0);
-
-		rcSrc2.x = sx + 1;
-		rcSrc2.y = sy + 19;
-		rcSrc2.w = mx2;
-		rcSrc2.h = 2;
-
-		SDL_FillRect(videobuffer, &rcSrc2, ccc);
+		// spell strength
+		game_fillrect(videobuffer, sx + 1, sy + 19,
+				hud_recalc(player.spellstrength, 54, 100), 2,
+				player.spellstrength == 100 ? RGB(224, 0, 0) : RGB(128, 0, 224));
 
 		// time
 		int ase = secstart + secsingame;
@@ -2905,6 +2844,7 @@ void game_drawhud()
 			sys_print(videobuffer, line, sx + 17, sy + 7, 0);
 		}
 
+		// spells in menu
 		if(player.foundcrystal == 1) {
 			rcSrc.x = 243;
 			rcSrc.y = 67;
@@ -2912,28 +2852,10 @@ void game_drawhud()
 
 			SDL_BlitSurface(itemimg[7], NULL, videobuffer, &rcSrc);
 
-			ccc = SDL_MapRGB(videobuffer->format, 0, 32, 32);
-
-			rcSrc2.x = rcSrc.x;
-			rcSrc2.y = sy + 16;
-			rcSrc2.w = 16;
-			rcSrc2.h = 4;
-
-			SDL_FillRect(videobuffer, &rcSrc2, ccc);
-
-			ccc = SDL_MapRGB(videobuffer->format, 0, 224, 64);
-			if(player.crystalcharge == 100) ccc = SDL_MapRGB(videobuffer->format, 255, 128, 32);
-
-			mx = player.crystalcharge / 100 * 14;
-			if(mx > 14) mx = 14;
-
-			rcSrc2.x = rcSrc.x + 1;
-			rcSrc2.y = sy + 17;
-			rcSrc2.w = mx;
-			rcSrc2.h = 2;
-
-			SDL_FillRect(videobuffer, &rcSrc2, ccc);
-
+			game_fillrect(videobuffer, rcSrc.x, sy + 16, 16, 4, RGB(0, 32, 32));
+			game_fillrect(videobuffer, rcSrc.x + 1, sy + 17,
+					hud_recalc(player.crystalcharge, 14, 100), 2,
+					player.crystalcharge == 100 ? RGB(255, 128, 32) : RGB(0, 224, 64));
 
 			for(int i = 0; i < 4; i++) { // ?? i < 5
 				rcSrc.x = 243;
@@ -2943,27 +2865,10 @@ void game_drawhud()
 				if(player.foundspell[i] == 1) {
 					SDL_BlitSurface(itemimg[8 + i], NULL, videobuffer, &rcSrc);
 
-					ccc = SDL_MapRGB(videobuffer->format, 0, 32, 32);
-
-					rcSrc2.x = rcSrc.x;
-					rcSrc2.y = sy + 16;
-					rcSrc2.w = 16;
-					rcSrc2.h = 4;
-
-					SDL_FillRect(videobuffer, &rcSrc2, ccc);
-
-					ccc = SDL_MapRGB(videobuffer->format, 0, 224, 64);
-					if(player.spellcharge[i] == 100) ccc = SDL_MapRGB(videobuffer->format, 255, 128, 32);
-
-					mx = player.spellcharge[i] / 100 * 14;
-					if(mx > 14) mx = 14;
-
-					rcSrc2.x = rcSrc.x + 1;
-					rcSrc2.y = sy + 17;
-					rcSrc2.w = mx;
-					rcSrc2.h = 2;
-
-					SDL_FillRect(videobuffer, &rcSrc2, ccc);
+					game_fillrect(videobuffer, rcSrc.x, sy + 16, 16, 4, RGB(0, 32, 32));
+					game_fillrect(videobuffer, rcSrc.x + 1, sy + 17,
+							hud_recalc(player.spellcharge[i], 14, 100), 2,
+							player.spellcharge[i] == 100 ? RGB(255, 128, 32) : RGB(0, 224, 64));
 				}
 			}
 		}
