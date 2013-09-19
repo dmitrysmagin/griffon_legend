@@ -2750,7 +2750,7 @@ void game_drawhud()
 				hud_recalc(player.exp, 14, player.nextlevel), 2, RGB(0, 224, 64));
 
 		// attack strength
-		game_fillrect(videobuffer, sx + 64, sy + 16, 56, 6, RGB(0, 32, 32));
+		game_fillrect(videobuffer, sx + 1, sy + 16, 56, 6, RGB(0, 32, 32));
 		game_fillrect(videobuffer, sx + 1, sy + 17,
 				hud_recalc(player.attackstrength, 54, 100), 2,
 				player.attackstrength == 100 ? RGB(255, 128, 32) : RGB(0, 64, 224));
