@@ -60,6 +60,7 @@
 #define MAXFLOAT	32
 #define MAXSPELL	32
 
+// spells
 #define ice		0
 #define steel		1
 #define wood		2
@@ -112,8 +113,6 @@ typedef struct {
 	int	foundspell[5];
 	float	spellcharge[5];
 	int	inventory[5];
-	int	foundcrystal;
-	float	crystalcharge;
 	float	attackstrength;
 	float	spellstrength;
 	int	spelldamage;
@@ -726,9 +725,6 @@ int state_load(int slotnum)
 			for(int a = 0; a < 5; a++) {
 				INPUT("%i", &player.inventory[a]);
 			}
-
-			INPUT("%i", &player.foundcrystal);
-			INPUT("%f", &player.crystalcharge);
 			INPUT("%f", &player.attackstrength);
 			INPUT("%i", &player.spelldamage);
 			INPUT("%i", &player.sworddamage);
@@ -810,8 +806,6 @@ int state_load_player(int slotnum)
 			for(int a = 0; a < 5; a++) {
 				INPUT("%i", &playera.inventory[a]);
 			}
-			INPUT("%i", &playera.foundcrystal);
-			INPUT("%f", &playera.crystalcharge);
 			INPUT("%f", &playera.attackstrength);
 			INPUT("%i", &playera.spelldamage);
 			INPUT("%i", &playera.sworddamage);
@@ -868,8 +862,6 @@ int state_save(int slotnum)
 			for(int a = 0; a < 5; a++) {
 				PRINT("%i", player.inventory[a]);
 			}
-			PRINT("%i", player.foundcrystal);
-			PRINT("%f", player.crystalcharge);
 			PRINT("%f", player.attackstrength);
 			PRINT("%i", player.spelldamage);
 			PRINT("%i", player.sworddamage);
@@ -1013,8 +1005,8 @@ void game_attack()
 				}
 
 				if(oscript == 3) {
-					player.foundcrystal = 1;
-					player.crystalcharge = 0;
+					player.foundspell[0] = 1;
+					player.spellcharge[0] = 0;
 
 					game_addFloatIcon(7, lx * 16, (ly - 1) * 16);
 
@@ -1573,10 +1565,10 @@ void game_checkinputs()
 					return;
 				}
 
-				if(curitem == 5 && player.crystalcharge == 100) {
+				if(curitem == 5 && player.spellcharge[0] == 100) {
 					game_castspell(5, player.px, player.py, npcinfo[curenemy].x, npcinfo[curenemy].y, 0);
 
-					player.crystalcharge = 0;
+					player.spellcharge[0] = 0;
 
 					forcepause = 1;
 
@@ -1593,7 +1585,7 @@ void game_checkinputs()
 						game_castspell(curitem - 6, player.px, player.py, postinfo[pst][0], postinfo[pst][1], 0);
 					}
 
-					player.spellcharge[curitem - 6] = 0;
+					player.spellcharge[curitem - 5] = 0;
 
 					player.spellstrength = 0;
 
@@ -1604,7 +1596,7 @@ void game_checkinputs()
 				}
 
 				if(curitem > 5 && selenemyon == 0 && itemselon == 1) {
-					if(player.spellcharge[curitem - 6] == 100) {
+					if(player.spellcharge[curitem - 5] == 100) {
 						itemticks = ticks + ntickdelay;
 
 						selenemyon = 1;
@@ -2703,21 +2695,12 @@ void game_drawhud()
 		rcSrc.y = sy;
 
 		// spells in game
-		if(player.foundcrystal == 1) {
-			rcSrc.x = rcSrc.x + 17;
-
-			SDL_BlitSurface(itemimg[7], NULL, videobuffer, &rcSrc);
-
-			game_fillrect(videobuffer, rcSrc.x, sy + 16, 16, 4, RGB(0, 32, 32));
-			game_fillrect(videobuffer, rcSrc.x + 1, sy + 17,
-					hud_recalc(player.crystalcharge, 14, 100), 2, 
-					player.crystalcharge == 100 ? RGB(255, 128, 32) : RGB(0, 224, 64));
-
+		if(player.foundspell[0] == 1) {
 			for(int i = 0; i < 5; i++) {
 				rcSrc.x = rcSrc.x + 17;
 
 				if(player.foundspell[i] == 1) {
-					SDL_BlitSurface(itemimg[8 + i], NULL, videobuffer, &rcSrc);
+					SDL_BlitSurface(itemimg[7 + i], NULL, videobuffer, &rcSrc);
 
 					game_fillrect(videobuffer, rcSrc.x, sy + 16, 16, 4, RGB(0, 32, 32));
 					game_fillrect(videobuffer, rcSrc.x + 1, sy + 17,
@@ -2845,25 +2828,14 @@ void game_drawhud()
 		}
 
 		// spells in menu
-		if(player.foundcrystal == 1) {
-			rcSrc.x = 243;
-			rcSrc.y = 67;
-			sy = 67;
-
-			SDL_BlitSurface(itemimg[7], NULL, videobuffer, &rcSrc);
-
-			game_fillrect(videobuffer, rcSrc.x, sy + 16, 16, 4, RGB(0, 32, 32));
-			game_fillrect(videobuffer, rcSrc.x + 1, sy + 17,
-					hud_recalc(player.crystalcharge, 14, 100), 2,
-					player.crystalcharge == 100 ? RGB(255, 128, 32) : RGB(0, 224, 64));
-
-			for(int i = 0; i < 4; i++) { // ?? i < 5
+		if(player.foundspell[0] == 1) {
+			for(int i = 0; i < 5; i++) {
 				rcSrc.x = 243;
-				rcSrc.y = 91 + i * 24;
+				rcSrc.y = 67 + i * 24;
 				sy = rcSrc.y;
 
 				if(player.foundspell[i] == 1) {
-					SDL_BlitSurface(itemimg[8 + i], NULL, videobuffer, &rcSrc);
+					SDL_BlitSurface(itemimg[7 + i], NULL, videobuffer, &rcSrc);
 
 					game_fillrect(videobuffer, rcSrc.x, sy + 16, 16, 4, RGB(0, 32, 32));
 					game_fillrect(videobuffer, rcSrc.x + 1, sy + 17,
@@ -3557,7 +3529,7 @@ void game_drawplayer()
 	}
 
 	int sss = 6;
-	if(player.foundcrystal) sss = 8;
+	if(player.foundspell[0]) sss = 8;
 	int npx = player.px;
 	int npy = player.py;
 	rcDest.x = npx + 4;
@@ -4799,7 +4771,7 @@ void game_loadmap(int mapnum)
 	}
 
 	// academy crystal
-	if(curmap == 24 && player.foundcrystal == 0 && scriptflag[3][0] == 1) {
+	if(curmap == 24 && player.foundspell[0] == 0 && scriptflag[3][0] == 1) {
 		cx = 9;
 		cy = 7;
 
@@ -5129,8 +5101,6 @@ __exit_do:
 		player.spellcharge[i] = 0;
 		player.inventory[i] = 0;
 	}
-	player.foundcrystal = 0;
-	player.crystalcharge = 0;
 	player.attackstrength = 0;
 	player.spelldamage = 0;
 	player.sworddamage = 0;
@@ -5495,14 +5465,10 @@ void game_saveloadnew()
 				nx = rcSrc.x + 13 + 3 * 8;
 				rcSrc.x = nx - 17;
 
-				if(playera.foundcrystal == 1) {
-					rcSrc.x = rcSrc.x + 17;
-
-					SDL_BlitSurface(itemimg[7], NULL, videobuffer, &rcSrc);
-
+				if(playera.foundspell[0] == 1) {
 					for(int i = 0; i < 5; i++) {
 						rcSrc.x = rcSrc.x + 17;
-						if(playera.foundspell[i] == 1) SDL_BlitSurface(itemimg[8 + i], NULL, videobuffer, &rcSrc);
+						if(playera.foundspell[i] == 1) SDL_BlitSurface(itemimg[7 + i], NULL, videobuffer, &rcSrc);
 					}
 				}
 			} else {
@@ -7470,7 +7436,7 @@ void game_updspells()
 					int lx = (int)npx / 16;
 					int ly = (int)npy / 16;
 
-					for(int f = 0; f <= 4; f++) {
+					for(int f = 0; f < 5; f++) { // !! f < 5
 						foundel[f] = 0;
 					}
 
@@ -7491,16 +7457,16 @@ void game_updspells()
 										int curtiley = (curtile - curtilex) / 20;
 
 										int element = elementmap[curtiley][curtilex];
-										if(element > -1 && curtilel == 0) foundel[element] = 1;
+										if(element > -1 && curtilel == 0) foundel[element + 1] = 1;
 									}
 								}
 
 								int o = objmap[sx][sy];
 								if(o > -1) {
-									if(objectinfo[o][4] == 1) foundel[1] = 1;
+									if(objectinfo[o][4] == 1) foundel[2] = 1;
 									if(o == 1 || o == 2) {
-										foundel[1] = 1;
-										foundel[3] = 1;
+										foundel[2] = 1;
+										foundel[4] = 1;
 									}
 								}
 							}
@@ -7514,10 +7480,10 @@ void game_updspells()
 						if(foundel[f] == 1 && player.foundspell[f] == 0) {
 							player.foundspell[f] = 1;
 							player.spellcharge[f] = 0;
-							if(f == 0) strcpy(line, "Found... Water Essence");
-							if(f == 1) strcpy(line, "Found... Metal Essence");
-							if(f == 2) strcpy(line, "Found... Earth Essence");
-							if(f == 3) strcpy(line, "Found... Fire Essence");
+							if(f == 1) strcpy(line, "Found... Water Essence");
+							if(f == 2) strcpy(line, "Found... Metal Essence");
+							if(f == 3) strcpy(line, "Found... Earth Essence");
+							if(f == 4) strcpy(line, "Found... Fire Essence");
 							break;
 						}
 					}
@@ -8838,19 +8804,16 @@ void sys_update()
 	SDL_FillRect(clipbg, &rc, 1000);
 
 	if(forcepause == 0) {
-		if(player.foundcrystal == 1) player.crystalcharge += 5 * player.level * 0.001 * fpsr;
-		if(player.crystalcharge > 100) player.crystalcharge = 100;
-
 		for(int i = 0; i < 5; i++) {
 			if(player.foundspell[i] == 1) player.spellcharge[i] += 1 * player.level * 0.01 * fpsr;
 			if(player.spellcharge[i] > 100) player.spellcharge[i] = 100;
 		}
 
-		player.attackstrength += (30 + 3 * (float)player.level) / 50 * fpsr;
-
-		if(player.foundcrystal) {
+		if(player.foundspell[0]) {
 			player.spellstrength += 3 * player.level * .01 * fpsr;
 		}
+
+		player.attackstrength += (30 + 3 * (float)player.level) / 50 * fpsr;
 	}
 
 	if(player.attackstrength > 100) player.attackstrength = 100;
