@@ -2611,12 +2611,7 @@ void game_drawhud()
 
 	long ccc;
 
-	rcSrc.x = 0;
-	rcSrc.y = 0;
-	rcSrc.w = 320;
-	rcSrc.h = 240;
-
-	SDL_FillRect(videobuffer2, &rcSrc, 0);
+	game_fillrect(videobuffer2, 0, 0, 320, 240, 0);
 
 	for(int i = 0; i < MAXFLOAT; i++) {
 		if(floattext[i][0] > 0) {
