@@ -2621,42 +2621,20 @@ void game_drawhud()
 	for(int i = 0; i < MAXFLOAT; i++) {
 		if(floattext[i][0] > 0) {
 			int fc = (int)floattext[i][3];
+			int c = fc, c2 = 3;
 
-			if(fc == 1 || fc == 3) {
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 0, (int)(floattext[i][2]) - 1, 2);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 0, (int)(floattext[i][2]) + 1, 2);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) - 1, (int)(floattext[i][2]) + 0, 2);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 1, (int)(floattext[i][2]) + 0, 2);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]), (int)(floattext[i][2]), fc);
-			}
-			if(fc == 2) {
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 0, (int)(floattext[i][2]) - 1, 3);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 0, (int)(floattext[i][2]) + 1, 3);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) - 1, (int)(floattext[i][2]) + 0, 3);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 1, (int)(floattext[i][2]) + 0, 3);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]), (int)(floattext[i][2]), fc);
+			if(fc == 4) c = 1; else if(fc == 5) c = 0;
+
+			if(fc == 1 || fc == 3) c2 = 2;
+
+			if(fc != 0) {
+				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 0, (int)(floattext[i][2]) - 1, c2);
+				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 0, (int)(floattext[i][2]) + 1, c2);
+				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) - 1, (int)(floattext[i][2]) + 0, c2);
+				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 1, (int)(floattext[i][2]) + 0, c2);
 			}
 
-			if(fc == 4) {
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 0, (int)(floattext[i][2]) - 1, 3);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 0, (int)(floattext[i][2]) + 1, 3);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) - 1, (int)(floattext[i][2]) + 0, 3);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 1, (int)(floattext[i][2]) + 0, 3);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]), (int)(floattext[i][2]), 1);
-			}
-
-			if(fc == 5) {
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 0, (int)(floattext[i][2]) - 1, 3);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 0, (int)(floattext[i][2]) + 1, 3);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) - 1, (int)(floattext[i][2]) + 0, 3);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]) + 1, (int)(floattext[i][2]) + 0, 3);
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]), (int)(floattext[i][2]), 0);
-			}
-
-
-			if(fc == 0) {
-				sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]), (int)(floattext[i][2]), fc);
-			}
+			sys_print(videobuffer, floatstri[i], (int)(floattext[i][1]), (int)(floattext[i][2]), c);
 		}
 
 		if(floaticon[i][0] > 0) {
