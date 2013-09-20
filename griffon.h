@@ -196,6 +196,13 @@ typedef struct {
 	int	h;
 } ANIMSET2TYPE;
 
+extern PLAYERTYPE player;
+extern int curmap;
+extern int scriptflag[100][10];
+extern int objmapf[1000][21][15];
+extern int roomlocks[201];
+extern int secsingame, secstart;
+
 void game_addFloatIcon(int ico, float xloc, float yloc);
 void game_addFloatText(char *stri, float xloc, float yloc, int col);
 void game_attack();

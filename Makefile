@@ -10,7 +10,7 @@ INCS      = -I.
 LDFLAGS   =
 LIBS      = -lSDL -lSDL_image -lSDL_mixer
 
-OBJS      = griffon.o config.o
+OBJS      = griffon.o config.o state.o
 
 # Magic starts here
 
