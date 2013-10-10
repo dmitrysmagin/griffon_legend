@@ -1,0 +1,62 @@
+
+                            The Griffon Legend 
+                            ==================
+
+              Originally written by Syn9 in FreeBASIC with SDL
+                      http://syn9.thehideoutgames.com/
+
+            Ported to plain C for GCW-Zero handheld by Dmitry Smagin
+                http://github.com/dmitrysmagin/griffon_legend
+
+
+                 Programming/Graphics: Daniel "Syn9" Kennedy
+                     Music/Sound effects: David Turner
+
+                   Beta testing and gameplay design help:
+                    Deleter, Cha0s, Aether Fox, and Kiz
+
+Introduction
+============
+
+The Griffon Legend is an action RPG with screen-to-screen map. It features
+original storyline and design made in 16-bit style RPG's of SNES/GENESIS era.
+
+During gameplay you can see up to 3 bars below your character. The top is
+health, the next is attack strength (let it charge to hit harder) and then
+spell strangth (same as attack). When you learn new spells you will see their
+icons in the bottom right corner with a meter below them to show them charging.
+When the meter turns orange they are ready for use.
+
+Some history
+============
+
+Originally The Griffon Legend was written in FreeBASIC (http://freebasic.net/)
+using SDL for graphics and FMOD for sound/music. That restricted the game to
+be released for Windows only. Now The Griffon Legend is rewritten in plain C
+using SDL and SDL_mixer for better portability, the source code is licensed
+under GPL2 license (see COPYING). All non source code assets are licensed under
+Creative Commons and are copyright of their respective authors.
+
+GCW-Zero controls
+=================
+
+D-PAD  - moving
+A      - attack
+B      - item menu
+SELECT - main menu
+
+
+Special thanks
+==============
+
+Special thanks to Pete for writing the article on the game, that was awsome!
+As well as all the beta testers for putting so much time into making the game
+fun. And everyone who has kept up with the game waiting for it to be released,
+i am very honoured that so many people were looking forward to this game.
+
+I really hope everyone who plays this game enjoys it.  ive tried to get as
+much criticism as i can to make sure it is wellrounded and incorporates all
+the necessities for a game of this style. Also any comments or criticism is
+always welcome at the syn9.thehideoutgames.com forums!
+
+Thank you for taking time to read this, and enjoy the game!
