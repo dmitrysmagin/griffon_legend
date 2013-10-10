@@ -109,7 +109,7 @@ int ticks, tickspassed, nextticks;
 float fp, fps, fpsr;
 int secsingame, secstart;
 
-extern char *story[38];
+extern char *story[48];
 SDL_Surface *mapimg[4];
 extern int invmap[4][7][13];
 extern char *story2[27];
@@ -233,7 +233,17 @@ int elementmap[15][20] = {
 	{ -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 }
 };
 
-char *story[38] = {
+char *story[48] = {
+	"The Griffon Legend",
+	"http://syn9.thehideoutgames.com/",
+	"",
+	"Programming/Graphics: Daniel Kennedy",
+	"Music/Sound effects: David Turner",
+	"",
+	"Porting to GCW-Zero: Dmitry Smagin",
+	"",
+	"",
+	"Story",
 	"Ever since I was a child",
 	"I remember being told the",
 	"Legend of the Griffon Knights,",
@@ -4494,7 +4504,7 @@ void game_newgame()
 				sys_print(videobuffer, story[i], x, yy, 4);
 			}
 
-			if(yy < 10 && i == 37) goto __exit_do;
+			if(yy < 10 && i == 47) goto __exit_do;
 		}
 
 		rc.x = 0;
@@ -5274,7 +5284,9 @@ void game_title(int mode)
 		sys_print(videobuffer, "new game/save/load", x, y, 4);
 		sys_print(videobuffer, "options", x, y + 16, 4);
 		sys_print(videobuffer, "quit game", x, y + 32, 4);
+
 		if(mode == 1) sys_print(videobuffer, "return", x, y + 48, 4);
+		else sys_print(videobuffer, "(c) 2005 by Daniel 'Syn9' Kennedy", 28, 224, 4); 
 
 		rc.x = (float)(x - 16 - 4 * cos(3.14159 * 2 * itemyloc / 16));
 		rc.y = (float)(y - 4 + 16 * cursel);
