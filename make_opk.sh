@@ -13,7 +13,7 @@ FLIST="${FLIST} build/griffon.png"
 
 cat > build/default.gcw0.desktop <<EOF
 [Desktop Entry]
-Name=The Griffon Legend
+Name=Griffon Legend
 Comment=Action RPG game
 Exec=griffon.dge
 Terminal=false
