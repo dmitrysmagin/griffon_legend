@@ -1226,13 +1226,23 @@ void game_checktrigger()
 	if(triggerloc[lx][ly] > -1) game_processtrigger(triggerloc[lx][ly]);
 }
 
+#ifdef OPENDINGUX
+	#define MINCURSEL 7
+	#define MAXCURSEL 14
+	#define SY 22
+#else
+	#define MINCURSEL 0
+	#define MAXCURSEL 14
+	#define SY (38 + (240 - 38) / 2 - 88)
+#endif
+
 void game_configmenu()
 {
 	SDL_Surface *configwindow;
 	int cursel, curselt, ofullscreen;
 	int tickwait, keypause, ticks1;
 
-	cursel = 0;
+	cursel = MINCURSEL;
 
 	ticks = SDL_GetTicks();
 	tickwait = 100;
@@ -1276,22 +1286,34 @@ void game_configmenu()
 
 		SDL_BlitSurface(configwindow, NULL, videobuffer, NULL);
 
-		int sy = 38 + (240 - 38) / 2 - 88;
+		int sy = SY;
 
 		for(int i = 0; i <= 21; i++) {
 			static char *vr[22] = {
+#ifdef OPENDINGUX
+				"", "",
+				"", "", "", "",
+				"", "", "",
+#else
 				"Resolution:", "",
 				"Bit Depth:", "", "", "",
 				"Start Fullscreen:", "", "",
+#endif
 				"Music:", "", "",
 				"Sound Effects:", "", "",
 				"Music Volume:", "",
 				"Effects Volume:", "", "", "", ""
 			};
 			static char *vl[22] = {
+#ifdef OPENDINGUX
+				"", "",
+				"", "", "", "",
+				"", "", "",
+#else
 				"320x240", "640x480",
 				"16", "24", "32", "",
 				"Yes", "No", "",
+#endif
 				"On", "Off", "",
 				"On", "Off", "",
 				"[----------]", "",
@@ -1433,11 +1455,11 @@ void game_configmenu()
 
 				if(keys[SDLK_UP]) {
 					cursel--;
-					if(cursel < 0) cursel = 14;
+					if(cursel < MINCURSEL) cursel = 14;
 				}
 				if(keys[SDLK_DOWN]) {
 					cursel++;
-					if(cursel > 14) cursel = 0;
+					if(cursel > 14) cursel = MINCURSEL;
 				}
 
 				if(keys[SDLK_LCTRL] || keys[SDLK_RETURN]) {

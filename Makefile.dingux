@@ -5,7 +5,7 @@
 
 NAME      = griffon.dge
 CC        = mipsel-linux-gcc
-CFLAGS    = -g -O2 -Wall -Wextra -std=c99 \
+CFLAGS    = -DOPENDINGUX -g -O2 -Wall -Wextra -std=c99 \
             -mips32 -fomit-frame-pointer -ffast-math -fno-common \
             -falign-functions -falign-loops -falign-labels -falign-jumps -fno-builtin 
 INCS      = -I.
