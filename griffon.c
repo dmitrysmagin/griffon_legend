@@ -114,7 +114,7 @@ SDL_Surface *mapimg[4];
 extern int invmap[4][7][13];
 extern char *story2[27];
 
-SDL_Rect rc, rc2, rcSrc, rcDest;
+SDL_Rect rcSrc, rcDest;
 
 // -----------special case
 int dontdrawover;	// used in map24 so that the candles dont draw over the boss, default set to 0
@@ -1259,6 +1259,7 @@ void game_checktrigger()
 void game_configmenu()
 {
 	SDL_Surface *configwindow;
+	SDL_Rect rc;
 	int cursel, curselt, ofullscreen;
 	int tickwait, keypause, ticks1;
 
@@ -1276,14 +1277,6 @@ void game_configmenu()
 
 	ticks1 = ticks;
 	do {
-		rc.x = 0;
-		rc.y = 0;
-
-		rc2.x = 0;
-		rc2.y = 0;
-		rc2.w = 320;
-		rc2.h = 240;
-
 		SDL_FillRect(videobuffer, NULL, 0);
 
 		rcDest.x = 256 + 256 * cos(3.141592 / 180 * clouddeg * 40);
@@ -1386,11 +1379,6 @@ void game_configmenu()
 
 		SDL_BlitSurface(itemimg[15], NULL, videobuffer, &rc);
 
-		rc.x = 0;
-		rc.y = 0;
-		rc.w = 320;
-		rc.h = 240;
-
 		float yy = 255.0;
 		if(ticks < ticks1 + 1000) {
 			yy = 255.0 * ((float)(ticks - ticks1) / 1000.0);
@@ -1399,7 +1387,7 @@ void game_configmenu()
 		}
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, (int)yy);
-		SDL_BLITVIDEO(videobuffer, &rc, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 
 		SDL_Flip(video);
@@ -2219,11 +2207,9 @@ void game_drawhud()
 		rcDest.y = 0;
 		rcDest.w = 320;
 		rcDest.h = 240;
-		rc2.x = 0;
-		rc2.y = 0;
 		SDL_SetAlpha(videobuffer2, SDL_SRCALPHA, (int)(player.itemselshade * 4));
 		SDL_FillRect(videobuffer2, &rcDest, 0);
-		SDL_BlitSurface(videobuffer2, NULL, videobuffer, &rc2);
+		SDL_BlitSurface(videobuffer2, NULL, videobuffer, NULL);
 
 		int sy = 202;
 		rcSrc.x = 46;
@@ -3081,6 +3067,8 @@ void game_drawplayer()
 
 void game_drawview()
 {
+	SDL_Rect rc;
+
 	SDL_BlitSurface(mapbg, NULL, videobuffer, NULL);
 
 	game_updspellsunder();
@@ -3101,41 +3089,23 @@ void game_drawview()
 	game_updspells();
 
 	if(cloudson == 1) {
-		rcDest.x = (float)(256 + 256 * cos(3.141592 / 180 * clouddeg));
-		rcDest.y = (float)(192 + 192 * sin(3.141592 / 180 * clouddeg));
-		rcDest.w = 320;
-		rcDest.h = 240;
+		rc.x = (float)(256 + 256 * cos(3.141592 / 180 * clouddeg));
+		rc.y = (float)(192 + 192 * sin(3.141592 / 180 * clouddeg));
+		rc.w = 320;
+		rc.h = 240;
 
-		SDL_BlitSurface(cloudimg, &rcDest, videobuffer, NULL);
+		SDL_BlitSurface(cloudimg, &rc, videobuffer, NULL);
 	}
 
 	game_drawhud();
 
-	rcDest.x = 0;
-	rcDest.y = 0;
-
-	SDL_BLITVIDEO(videobuffer, NULL, video, &rcDest);
+	SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 }
 
 void game_endofgame()
 {
 	float xofs = 0;
 	int ticks1;
-
-	rcSrc.x = 0;
-	rcSrc.y = 0;
-	rcSrc.w = 320;
-	rcSrc.h = 240;
-
-	rc.x = 0;
-	rc.y = 0;
-	rc.w = 320;
-	rc.h = 240;
-
-	rc2.x = 0;
-	rc2.y = 0;
-	rc2.w = 320;
-	rc2.h = 240;
 
 	ticks = SDL_GetTicks();
 
@@ -3150,9 +3120,9 @@ void game_endofgame()
 	ticks1 = ticks;
 	int ya = 0;
 
-	SDL_FillRect(videobuffer2, &rc, 0);
-	SDL_FillRect(videobuffer3, &rc, 0);
-	SDL_BlitSurface(videobuffer, &rc, videobuffer2, &rc);
+	SDL_FillRect(videobuffer2, NULL, 0);
+	SDL_FillRect(videobuffer3, NULL, 0);
+	SDL_BlitSurface(videobuffer, NULL, videobuffer2, NULL);
 
 	float ld = 0;
 	int ldstop = 0;
@@ -3174,12 +3144,12 @@ void game_endofgame()
 			break;
 		}
 
-		SDL_FillRect(videobuffer, &rc, 0);
+		SDL_FillRect(videobuffer, NULL, 0);
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, ya);
-		SDL_BlitSurface(videobuffer2, &rc, videobuffer3, &rc);
-		SDL_BlitSurface(videobuffer, &rc, videobuffer3, &rc);
-		SDL_BlitSurface(videobuffer3, &rc, video, &rc2);
+		SDL_BlitSurface(videobuffer2, NULL, videobuffer3, NULL);
+		SDL_BlitSurface(videobuffer, NULL, videobuffer3, NULL);
+		SDL_BlitSurface(videobuffer3, NULL, video, NULL);
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 
 		SDL_Flip(video);
@@ -3204,18 +3174,17 @@ void game_endofgame()
 	float y = 140;
 
 	do {
+		SDL_Rect rc;
+
  		rc.x = -xofs;
 		rc.y = 0;
 
-		SDL_BlitSurface(titleimg, &rcSrc, videobuffer, &rc);
+		SDL_BlitSurface(titleimg, NULL, videobuffer, &rc);
 
  		rc.x = -xofs + 320;
 		rc.y = 0;
 
-		SDL_BlitSurface(titleimg, &rcSrc, videobuffer, &rc);
-
- 		rc.x = 0;
-		rc.y = 0;
+		SDL_BlitSurface(titleimg, NULL, videobuffer, &rc);
 
 		y = y - spd * fpsr;
 		for(int i = 0; i <= 26; i++) {
@@ -3228,11 +3197,6 @@ void game_endofgame()
 			if(yy < 10 && i == 25) break;
 		}
 
-		rc.x = 0;
-		rc.y = 0;
-		rc.w = 320;
-		rc.h = 240;
-
 		int ya = 255;
 		if(ticks < ticks1 + 1000) {
 			ya = 255 * (ticks - ticks1) / 1000;
@@ -3241,7 +3205,7 @@ void game_endofgame()
 		}
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, ya);
-		SDL_BLITVIDEO(videobuffer, &rc, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 
 		SDL_Flip(video);
@@ -3275,15 +3239,10 @@ void game_endofgame()
 	} while(1);
 
 
-	rc.x = 0;
-	rc.y = 0;
-	rc.w = 320;
-	rc.h = 240;
-
 	ticks1 = ticks;
 	y = 0;
 
-	SDL_BlitSurface(videobuffer, &rc, videobuffer2, &rc);
+	SDL_BlitSurface(videobuffer, NULL, videobuffer2, NULL);
 
 	do {
 		if(ticks < ticks1 + 1500) {
@@ -3294,12 +3253,12 @@ void game_endofgame()
 			break;
 		}
 
-		SDL_FillRect(videobuffer, &rc, 0);
+		SDL_FillRect(videobuffer, NULL, 0);
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, y);
-		SDL_BlitSurface(videobuffer2, &rc, videobuffer3, &rc);
-		SDL_BlitSurface(videobuffer, &rc, videobuffer3, &rc);
-		SDL_BlitSurface(videobuffer3, &rc, video, &rc2);
+		SDL_BlitSurface(videobuffer2, NULL, videobuffer3, NULL);
+		SDL_BlitSurface(videobuffer, NULL, videobuffer3, NULL);
+		SDL_BlitSurface(videobuffer3, NULL, video, NULL);
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 
 		SDL_Flip(video);
@@ -3326,7 +3285,7 @@ void game_endofgame()
 	y = 0;
 	do {
 
-		SDL_BlitSurface(theendimg, &rcSrc, videobuffer, &rc);
+		SDL_BlitSurface(theendimg, NULL, videobuffer, NULL);
 
 		y = 255;
 		if(ticks < ticks1 + 1000) {
@@ -3336,34 +3295,34 @@ void game_endofgame()
 		}
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, y);
-		SDL_BLITVIDEO(videobuffer, &rc, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 
-			SDL_Flip(video);
-			SDL_PumpEvents();
+		SDL_Flip(video);
+		SDL_PumpEvents();
 
-			tickspassed = ticks;
-			ticks = SDL_GetTicks();
+		tickspassed = ticks;
+		ticks = SDL_GetTicks();
 
-			tickspassed = ticks - tickspassed;
-			fpsr = (float)tickspassed / 24;
+		tickspassed = ticks - tickspassed;
+		fpsr = (float)tickspassed / 24;
 
-			fp++;
-			if(ticks > nextticks) {
-				nextticks = ticks + 1000;
-				fps = fp;
-				fp = 0;
-			}
+		fp++;
+		if(ticks > nextticks) {
+			nextticks = ticks + 1000;
+			fps = fp;
+			fp = 0;
+		}
 
-			SDL_PollEvent(&event);
-			keys = SDL_GetKeyState(NULL);
+		SDL_PollEvent(&event);
+		keys = SDL_GetKeyState(NULL);
 
-			if(event.type == SDL_KEYDOWN && keywait < ticks) break;
+		if(event.type == SDL_KEYDOWN && keywait < ticks) break;
 
 	} while(1);
 
-	SDL_FillRect(videobuffer2, &rc, 0);
-	SDL_FillRect(videobuffer3, &rc, 0);
+	SDL_FillRect(videobuffer2, NULL, 0);
+	SDL_FillRect(videobuffer3, NULL, 0);
 
 	game_theend();
 
@@ -3373,21 +3332,8 @@ void game_eventtext(char *stri)
 {
 	int x, fr, pauseticks, bticks;
 
-	rcSrc.x = 0;
-	rcSrc.y = 0;
-	rcSrc.w = 320;
-	rcSrc.h = 240;
-
-	SDL_FillRect(videobuffer2, &rcSrc, 0);
-	SDL_FillRect(videobuffer3, &rcSrc, 0);
-
-	rc.x = 0;
-	rc.y = 0;
-
-	rc2.x = 0;
-	rc2.y = 0;
-	rc2.w = 320;
-	rc2.h = 240;
+	SDL_FillRect(videobuffer2, NULL, 0);
+	SDL_FillRect(videobuffer3, NULL, 0);
 
 	x = 160 - 4 * strlen(stri);
 
@@ -3396,7 +3342,7 @@ void game_eventtext(char *stri)
 	bticks = ticks;
 
 	SDL_BlitSurface(videobuffer, NULL, videobuffer3, NULL);
-	SDL_BlitSurface(video, &rc2, videobuffer2, NULL);
+	SDL_BlitSurface(videobuffer, NULL, videobuffer2, NULL);
 
 	do {
 		SDL_PollEvent(&event);
@@ -3412,11 +3358,11 @@ void game_eventtext(char *stri)
 
 		SDL_SetAlpha(windowimg, SDL_SRCALPHA, fr);
 
-		SDL_BlitSurface(windowimg, NULL, videobuffer, &rc);
+		SDL_BlitSurface(windowimg, NULL, videobuffer, NULL);
 		if(pauseticks < ticks) sys_print(videobuffer, stri, x, 15, 0);
 
 		SDL_SetAlpha(windowimg, SDL_SRCALPHA, 255);
-		SDL_BLITVIDEO(videobuffer, NULL, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 
 		SDL_Flip(video);
 		SDL_PumpEvents();
@@ -4470,28 +4416,13 @@ void game_newgame()
 	float ld = 0, add;
 	int ticks, cnt = 0;
 
-	rcSrc.x = 0;
-	rcSrc.y = 0;
-	rcSrc.w = 320;
-	rcSrc.h = 240;
-
-	SDL_FillRect(videobuffer2, &rcSrc, 0);
-	SDL_FillRect(videobuffer3, &rcSrc, 0);
-
-
-	rc.x = 0;
-	rc.y = 0;
-
-	rc2.x = 0;
-	rc2.y = 0;
-	rc2.w = 320;
-	rc2.h = 240;
-
+	SDL_FillRect(videobuffer2, NULL, 0);
+	SDL_FillRect(videobuffer3, NULL, 0);
 
 	ticks = SDL_GetTicks();
 
 	SDL_BlitSurface(videobuffer, NULL, videobuffer3, NULL);
-	SDL_BlitSurface(video, &rc2, videobuffer2, NULL);
+	SDL_BlitSurface(videobuffer, NULL, videobuffer2, NULL);
 
 	fpsr = 0.0;
 	int y = 140;
@@ -4508,6 +4439,8 @@ void game_newgame()
 	int ldstop = 0;
 
 	do {
+		SDL_Rect rc;
+
 		ld += 4 * fpsr;
 		if((int)ld > config.musicvol) ld = config.musicvol;
 		if(menabled == 1 && ldstop == 0) {
@@ -4524,9 +4457,6 @@ void game_newgame()
 		rc.y = 0;
 
 		SDL_BlitSurface(titleimg, NULL, videobuffer, &rc);
-
- 		rc.x = 0;
-		rc.y = 0;
 
 		if(++cnt >= 6) {
 			cnt = 0;
@@ -4545,12 +4475,7 @@ void game_newgame()
 			if(yy < 10 && i == 47) goto __exit_do;
 		}
 
-		rc.x = 0;
-		rc.y = 0;
-		rc.w = 320;
-		rc.h = 240;
-
-		SDL_BLITVIDEO(videobuffer, &rc, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 		SDL_Flip(video);
 
 		tickspassed = ticks;
@@ -4752,9 +4677,6 @@ void game_saveloadnew()
 	int ticks, ticks1, tickpause;
 
 	clouddeg = 0;
-
-	rc2.x = 0;
-	rc2.y = 0;
 
 	SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 	SDL_SetAlpha(saveloadimg, SDL_SRCALPHA, 192);
@@ -5015,7 +4937,7 @@ void game_saveloadnew()
 		}
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, (int)yy);
-		SDL_BLITVIDEO(videobuffer, NULL, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 
 		SDL_Flip(video);
@@ -5051,30 +4973,12 @@ void game_showlogos()
 	float y;
 	int ticks1;
 
-	rcSrc.x = 0;
-	rcSrc.y = 0;
-	rcSrc.w = 320;
-	rcSrc.h = 240;
-
-	rc.x = 0;
-	rc.y = 0;
-
-	rc2.x = 0;
-	rc2.y = 0;
-	rc2.w = 320;
-	rc2.h = 240;
-
 	ticks = SDL_GetTicks();
 	ticks1 = ticks;
 
 	y = 0.0;
 
 	do {
-		rc.x = 0;
-		rc.y = 0;
-		rc.w = 320;
-		rc.h = 240;
-
 		y = 255.0;
 		if(ticks < ticks1 + 1000) {
 			y = 255.0 * ((float)(ticks - ticks1) / 1000.0);
@@ -5088,14 +4992,13 @@ void game_showlogos()
 			if(y > 255.0) y = 255.0;
 		}
 
-		SDL_FillRect(videobuffer, &rc, 0);
+		SDL_FillRect(videobuffer, NULL, 0);
 
 		SDL_SetAlpha(logosimg, SDL_SRCALPHA, (int)y);
 		SDL_BlitSurface(logosimg, NULL, videobuffer, NULL);
 		SDL_SetAlpha(logosimg, SDL_SRCALPHA, 255);
 
-
-		SDL_BLITVIDEO(videobuffer, &rc, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 
 		SDL_Flip(video);
 		SDL_PumpEvents();
@@ -5123,22 +5026,14 @@ void game_swash()
 {
 	float y;
 
-	rcDest.x = 0;
-	rcDest.y = 0;
-	rcDest.w = 320;
-	rcDest.h = 240;
-
-	rc2.x = 0;
-	rc2.y = 0;
-
 	y = 0;
 
 	do {
 		y = y + 1 * fpsr;
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, (int)y);
-		SDL_FillRect(videobuffer, &rcDest, 0);
-		SDL_BLITVIDEO(videobuffer, &rcDest, video, &rc2);
+		SDL_FillRect(videobuffer, NULL, 0);
+		SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 
 		SDL_Flip(video);
 		SDL_PumpEvents();
@@ -5178,7 +5073,7 @@ void game_swash()
 			SDL_BlitSurface(cloudimg, &rcDest, videobuffer, NULL);
 		}
 
-		SDL_BLITVIDEO(videobuffer, NULL, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 		SDL_Flip(video);
 		SDL_PumpEvents();
 
@@ -5207,14 +5102,6 @@ void game_swash()
 
 void game_theend()
 {
-	rcDest.x = 0;
-	rcDest.y = 0;
-	rcDest.w = 320;
-	rcDest.h = 240;
-
-	rc2.x = 0;
-	rc2.y = 0;
-
 	for(int i = 0; i < MAXFLOAT; i++) {
 		floattext[i][0] = 0;
 		floaticon[i][0] = 0;
@@ -5222,8 +5109,8 @@ void game_theend()
 
 	for(float y = 0; y < 100; y += fpsr) {
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, (int)y);
-		SDL_FillRect(videobuffer, &rcDest, 0);
-		SDL_BLITVIDEO(videobuffer, &rcDest, video, &rc2);
+		SDL_FillRect(videobuffer, NULL, 0);
+		SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 
 		SDL_Flip(video);
 		SDL_PumpEvents();
@@ -5260,18 +5147,10 @@ void game_title(int mode)
 	SDL_FillRect(videobuffer2, &rcSrc, 0);
 	SDL_FillRect(videobuffer3, &rcSrc, 0);
 
-	rc.x = 0;
-	rc.y = 0;
-
-	rc2.x = 0;
-	rc2.y = 0;
-	rc2.w = 320;
-	rc2.h = 240;
-
 	ticks = SDL_GetTicks();
 
 	SDL_BlitSurface(videobuffer, NULL, videobuffer3, NULL);
-	SDL_BlitSurface(video, &rc2, videobuffer2, NULL);
+	SDL_BlitSurface(videobuffer, NULL, videobuffer2, NULL);
 
 	cursel = 0;
 
@@ -5292,6 +5171,7 @@ void game_title(int mode)
 
 	float ld = 0;
 	do {
+		SDL_Rect rc;
 
 		ld += 4.0 * fpsr;
 		if(ld > config.musicvol) ld = config.musicvol;
@@ -5330,11 +5210,6 @@ void game_title(int mode)
 
 		SDL_BlitSurface(itemimg[15], NULL, videobuffer, &rc);
 
-		rc.x = 0;
-		rc.y = 0;
-		rc.w = 320;
-		rc.h = 240;
-
 		float yf = 255.0;
 		if(ticks < ticks1 + 1000) {
 			yf = 255.0 * ((float)(ticks - ticks1) / 1000.0);
@@ -5343,7 +5218,7 @@ void game_title(int mode)
 		}
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, (int)yf);
-		SDL_BLITVIDEO(videobuffer, &rc, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 
 		tickspassed = ticks;
@@ -8297,6 +8172,8 @@ void sys_update()
 
 	SDL_UnlockSurface(clipbg);
 	SDL_BlitSurface(clipbg2, NULL, clipbg, NULL);
+
+	SDL_Rect rc;
 
 	rc.x = player.px - 2;
 	rc.y = player.py - 2;
