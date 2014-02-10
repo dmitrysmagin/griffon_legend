@@ -2,4 +2,6 @@
 *.dge
 *.exe
 *.dll
+*.o
+*.opk
 
