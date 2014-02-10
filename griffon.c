@@ -24,6 +24,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_mixer.h>
+#include <SDL/SDL_rotozoom.h>
 
 #include "griffon.h"
 #include "config.h"
@@ -83,7 +84,6 @@ SDL_Surface *video, *videobuffer, *videobuffer2, *videobuffer3;
 SDL_Surface *titleimg, *titleimg2, *inventoryimg;
 SDL_Surface *logosimg, *theendimg;
 SDL_Event event;
-int SCR_TOPX, SCR_TOPY;
 
 SDL_Surface *mapbg, *clipbg, *clipbg2;
 unsigned int clipsurround[4][4];
@@ -375,6 +375,26 @@ do {					\
 } while(0)
 
 // CODE GOES HERE -------------------------------------------------------------
+
+#ifdef OPENDINGUX
+  #define SDL_BLITVIDEO(X, Y, C, F) SDL_BlitSurface((X), (Y), (C), (F))
+#else
+  #define SDL_BLITVIDEO(X, Y, C, F) sdl_blitscale((X), (Y), (C), NULL)
+#endif
+
+void sdl_blitscale(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect)
+{
+	if(src->w != dst->w) {
+		SDL_Surface *scale2x = NULL;
+
+		scale2x = zoomSurface(src, 2, 2, 0);
+		SDL_BlitSurface(scale2x, NULL, dst, NULL);
+		SDL_FreeSurface(scale2x);
+	} else {
+		SDL_BlitSurface(src, NULL, dst, NULL);
+	}
+
+}
 
 void game_fillrect(SDL_Surface *surface, int x, int y, int w, int h, int color)
 {
@@ -1259,8 +1279,8 @@ void game_configmenu()
 		rc.x = 0;
 		rc.y = 0;
 
-		rc2.x = SCR_TOPX;
-		rc2.y = SCR_TOPY;
+		rc2.x = 0;
+		rc2.y = 0;
 		rc2.w = 320;
 		rc2.h = 240;
 
@@ -1379,7 +1399,7 @@ void game_configmenu()
 		}
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, (int)yy);
-		SDL_BlitSurface(videobuffer, &rc, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, &rc, video, &rc2);
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 
 		SDL_Flip(video);
@@ -1472,8 +1492,6 @@ void game_configmenu()
 						} else {
 							config.scr_width = 320;
 							config.scr_height = 240;
-							SCR_TOPX = 0;
-							SCR_TOPY = 0;
 						}
 
 						SDL_UpdateRect(video, 0, 0, config.scr_width, config.scr_height);
@@ -1487,8 +1505,6 @@ void game_configmenu()
 						} else {
 							config.scr_width = 640;
 							config.scr_height = 480;
-							SCR_TOPX = 160;
-							SCR_TOPY = 120;
 						}
 
 						SDL_UpdateRect(video, 0, 0, config.scr_width, config.scr_height);
@@ -3095,10 +3111,10 @@ void game_drawview()
 
 	game_drawhud();
 
-	rcDest.x = SCR_TOPX;
-	rcDest.y = SCR_TOPY;
+	rcDest.x = 0;
+	rcDest.y = 0;
 
-	SDL_BlitSurface(videobuffer, NULL, video, &rcDest);
+	SDL_BLITVIDEO(videobuffer, NULL, video, &rcDest);
 }
 
 void game_endofgame()
@@ -3116,8 +3132,8 @@ void game_endofgame()
 	rc.w = 320;
 	rc.h = 240;
 
-	rc2.x = SCR_TOPX;
-	rc2.y = SCR_TOPY;
+	rc2.x = 0;
+	rc2.y = 0;
 	rc2.w = 320;
 	rc2.h = 240;
 
@@ -3225,7 +3241,7 @@ void game_endofgame()
 		}
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, ya);
-		SDL_BlitSurface(videobuffer, &rc, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, &rc, video, &rc2);
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 
 		SDL_Flip(video);
@@ -3320,7 +3336,7 @@ void game_endofgame()
 		}
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, y);
-		SDL_BlitSurface(videobuffer, &rc, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, &rc, video, &rc2);
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 
 			SDL_Flip(video);
@@ -3368,8 +3384,8 @@ void game_eventtext(char *stri)
 	rc.x = 0;
 	rc.y = 0;
 
-	rc2.x = SCR_TOPX;
-	rc2.y = SCR_TOPY;
+	rc2.x = 0;
+	rc2.y = 0;
 	rc2.w = 320;
 	rc2.h = 240;
 
@@ -3400,7 +3416,7 @@ void game_eventtext(char *stri)
 		if(pauseticks < ticks) sys_print(videobuffer, stri, x, 15, 0);
 
 		SDL_SetAlpha(windowimg, SDL_SRCALPHA, 255);
-		SDL_BlitSurface(videobuffer, NULL, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, NULL, video, &rc2);
 
 		SDL_Flip(video);
 		SDL_PumpEvents();
@@ -4466,8 +4482,8 @@ void game_newgame()
 	rc.x = 0;
 	rc.y = 0;
 
-	rc2.x = SCR_TOPX;
-	rc2.y = SCR_TOPY;
+	rc2.x = 0;
+	rc2.y = 0;
 	rc2.w = 320;
 	rc2.h = 240;
 
@@ -4534,7 +4550,7 @@ void game_newgame()
 		rc.w = 320;
 		rc.h = 240;
 
-		SDL_BlitSurface(videobuffer, &rc, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, &rc, video, &rc2);
 		SDL_Flip(video);
 
 		tickspassed = ticks;
@@ -4737,8 +4753,8 @@ void game_saveloadnew()
 
 	clouddeg = 0;
 
-	rc2.x = SCR_TOPX;
-	rc2.y = SCR_TOPY;
+	rc2.x = 0;
+	rc2.y = 0;
 
 	SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 	SDL_SetAlpha(saveloadimg, SDL_SRCALPHA, 192);
@@ -4999,8 +5015,7 @@ void game_saveloadnew()
 		}
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, (int)yy);
-
-		SDL_BlitSurface(videobuffer, NULL, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, NULL, video, &rc2);
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 
 		SDL_Flip(video);
@@ -5044,8 +5059,8 @@ void game_showlogos()
 	rc.x = 0;
 	rc.y = 0;
 
-	rc2.x = SCR_TOPX;
-	rc2.y = SCR_TOPY;
+	rc2.x = 0;
+	rc2.y = 0;
 	rc2.w = 320;
 	rc2.h = 240;
 
@@ -5080,7 +5095,7 @@ void game_showlogos()
 		SDL_SetAlpha(logosimg, SDL_SRCALPHA, 255);
 
 
-		SDL_BlitSurface(videobuffer, &rc, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, &rc, video, &rc2);
 
 		SDL_Flip(video);
 		SDL_PumpEvents();
@@ -5113,8 +5128,8 @@ void game_swash()
 	rcDest.w = 320;
 	rcDest.h = 240;
 
-	rc2.x = SCR_TOPX;
-	rc2.y = SCR_TOPY;
+	rc2.x = 0;
+	rc2.y = 0;
 
 	y = 0;
 
@@ -5123,7 +5138,7 @@ void game_swash()
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, (int)y);
 		SDL_FillRect(videobuffer, &rcDest, 0);
-		SDL_BlitSurface(videobuffer, &rcDest, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, &rcDest, video, &rc2);
 
 		SDL_Flip(video);
 		SDL_PumpEvents();
@@ -5163,7 +5178,7 @@ void game_swash()
 			SDL_BlitSurface(cloudimg, &rcDest, videobuffer, NULL);
 		}
 
-		SDL_BlitSurface(videobuffer, NULL, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, NULL, video, &rc2);
 		SDL_Flip(video);
 		SDL_PumpEvents();
 
@@ -5197,8 +5212,8 @@ void game_theend()
 	rcDest.w = 320;
 	rcDest.h = 240;
 
-	rc2.x = SCR_TOPX;
-	rc2.y = SCR_TOPY;
+	rc2.x = 0;
+	rc2.y = 0;
 
 	for(int i = 0; i < MAXFLOAT; i++) {
 		floattext[i][0] = 0;
@@ -5208,7 +5223,7 @@ void game_theend()
 	for(float y = 0; y < 100; y += fpsr) {
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, (int)y);
 		SDL_FillRect(videobuffer, &rcDest, 0);
-		SDL_BlitSurface(videobuffer, &rcDest, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, &rcDest, video, &rc2);
 
 		SDL_Flip(video);
 		SDL_PumpEvents();
@@ -5248,8 +5263,8 @@ void game_title(int mode)
 	rc.x = 0;
 	rc.y = 0;
 
-	rc2.x = SCR_TOPX;
-	rc2.y = SCR_TOPY;
+	rc2.x = 0;
+	rc2.y = 0;
 	rc2.w = 320;
 	rc2.h = 240;
 
@@ -5328,7 +5343,7 @@ void game_title(int mode)
 		}
 
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, (int)yf);
-		SDL_BlitSurface(videobuffer, &rc, video, &rc2);
+		SDL_BLITVIDEO(videobuffer, &rc, video, &rc2);
 		SDL_SetAlpha(videobuffer, SDL_SRCALPHA, 255);
 
 		tickspassed = ticks;
@@ -7697,9 +7712,6 @@ void sys_initialize()
 	printf("SCR_HEIGHT: %i\n", config.scr_height);
 	printf("SCR_BITS: %i\n", config.scr_bpp);
 
-	SCR_TOPX = config.scr_width / 2 - 160;
-	SCR_TOPY = config.scr_height / 2 - 120;
-
 	fullscreen = config.fullscreen | config.hwaccel | config.hwsurface;
 
 	result = SDL_Init(SDL_INIT_EVERYTHING);
@@ -7721,10 +7733,10 @@ void sys_initialize()
 
 	SDL_ShowCursor(SDL_DISABLE);
 
-	videobuffer = SDL_DisplayFormat(video);
-	videobuffer2 = SDL_DisplayFormat(video);
-	videobuffer3 = SDL_DisplayFormat(video);
-	mapbg = SDL_CreateRGBSurface(config.hwsurface, 640, 480, config.scr_bpp, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
+	videobuffer = SDL_CreateRGBSurface(config.hwsurface, 320, 240, config.scr_bpp, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
+	videobuffer2 = SDL_CreateRGBSurface(config.hwsurface, 320, 240, config.scr_bpp, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
+	videobuffer3 = SDL_CreateRGBSurface(config.hwsurface, 320, 240, config.scr_bpp, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
+	mapbg = SDL_CreateRGBSurface(config.hwsurface, 320, 240, config.scr_bpp, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
 	clipbg = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, config.scr_bpp, video->format->Rmask, video->format->Gmask, video->format->Bmask, video->format->Amask);
 	clipbg2 = SDL_DisplayFormat(video);
 
@@ -8090,7 +8102,8 @@ void sys_progress(int w, int wm)
 	ccc = SDL_MapRGB(videobuffer->format, 0, 255, 0);
 
 	rcDest.w = w * 74 / wm;
-	SDL_FillRect(video, &rcDest, ccc);
+	SDL_FillRect(videobuffer, &rcDest, ccc);
+	SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
 	SDL_Flip(video);
 	SDL_PumpEvents();
 }
@@ -8112,27 +8125,28 @@ void sys_setupAudio()
 	atexit(Mix_CloseAudio);
 
 	char *stri = "Loading...";
-	sys_print(video, stri, SCR_TOPX + 160 - 4 * strlen(stri), SCR_TOPY + 116, 0);
+	sys_print(videobuffer, stri, 160 - 4 * strlen(stri), 116, 0);
 
 	loadimg = IMG_Load("art/load.bmp");
 	SDL_SetColorKey(loadimg, SDL_SRCCOLORKEY, SDL_MapRGB(loadimg->format, 255, 0, 255));
-
-	SDL_Flip(video);
 
 	rcSrc.x = 0;
 	rcSrc.y = 0;
 	rcSrc.w = 88;
 	rcSrc.h = 32;
 
-	rcDest.x = SCR_TOPX + 160 - 44;
-	rcDest.y = SCR_TOPY + 116 + 12;
+	rcDest.x = 160 - 44;
+	rcDest.y = 116 + 12;
 
 	SDL_SetAlpha(loadimg, 0 | SDL_SRCALPHA, 160); // 128
-	SDL_BlitSurface(loadimg, &rcSrc, video, &rcDest);
+	SDL_BlitSurface(loadimg, &rcSrc, videobuffer, &rcDest);
 	SDL_SetAlpha(loadimg, 0 | SDL_SRCALPHA, 255);
 
-	rcDest.x = SCR_TOPX + 160 - 44 + 7;
-	rcDest.y = SCR_TOPY + 116 + 12 + 12;
+	SDL_BLITVIDEO(videobuffer, NULL, video, NULL);
+	SDL_Flip(video);
+
+	rcDest.x = 160 - 44 + 7;
+	rcDest.y = 116 + 12 + 12;
 	rcDest.h = 8;
 
 	if(menabled == 1) {

@@ -8,7 +8,7 @@ CC        = gcc
 CFLAGS    = -g -O2 -Wall -Wextra -std=c99
 INCS      = -I.
 LDFLAGS   =
-LIBS      = -lm -lSDL -lSDL_image -lSDL_mixer
+LIBS      = -lm -lSDL_gfx -lSDL -lSDL_image -lSDL_mixer
 
 OBJS      = griffon.o config.o state.o
 
